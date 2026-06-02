@@ -57,63 +57,70 @@ body {
 /* White logo bar */
 .topbar-logo-row {
   background: #ffffff;
-  padding: 16px 40px;
+  padding: 20px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #e8edf5;
+  gap: 24px;
 }
 .topbar-logo {
-  display: flex; align-items: center;
+  display: flex; align-items: center; flex-shrink: 0;
 }
 .topbar-logo img, .topbar-logo-svg {
-  height: 46px; width: auto; display: block;
+  height: 50px; width: auto; display: block;
 }
-.topbar-logo-svg { height: 46px; width: 46px; }
+.topbar-logo-svg { height: 50px; width: 50px; }
 .topbar-report-label {
   text-align: center; flex: 1;
 }
 .topbar-powered {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0;
 }
 .topbar-powered-label {
-  font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
   color: #9aa0a6;
 }
 .indeed-wordmark {
-  height: 26px;
+  height: 28px;
   width: auto;
   display: block;
 }
 .topbar-report-label h1 {
-  font-size: 15px; font-weight: 700; color: #202124; letter-spacing: -0.2px;
+  font-size: 18px; font-weight: 800; color: #202124; letter-spacing: -0.4px;
 }
 .topbar-report-label p {
-  font-size: 11px; color: #5f6368; margin-top: 2px;
+  font-size: 12px; color: #5f6368; margin-top: 3px; font-weight: 500;
 }
 
 /* Dark context strip */
 .topbar-context {
   background: #202124;
-  padding: 10px 40px;
+  padding: 0 40px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: stretch;
   border-bottom: 3px solid #1a73e8;
+  min-height: 40px;
 }
 .topbar-context-left {
-  display: flex; align-items: center; gap: 20px;
+  display: flex; align-items: center; gap: 0; flex: 1;
 }
 .topbar-pill {
   display: inline-flex; align-items: center; gap: 6px;
-  font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 500;
+  font-size: 11px; color: rgba(255,255,255,0.55); font-weight: 500;
+  padding: 0 18px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  height: 100%;
+  min-height: 40px;
 }
-.topbar-pill strong { color: #fff; font-weight: 600; }
-.topbar-pill-sep { color: rgba(255,255,255,0.2); font-size: 14px; }
-.topbar-context-right {
-  font-size: 11px; color: rgba(255,255,255,0.45); text-align: right;
+.topbar-pill:first-child { padding-left: 0; }
+.topbar-pill strong { color: #fff; font-weight: 700; }
+.topbar-pill-sep { display: none; }
+.topbar-pill .pill-icon {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #1a73e8; flex-shrink: 0;
 }
-.topbar-context-right strong { color: #1a73e8; font-weight: 600; }
+.topbar-context-right { display: none; }
 
 /* ── KPI strip ───────────────────────────────────────────────── */
 .kpi-grid {
@@ -475,16 +482,10 @@ tr.callin-row td { font-weight: 700; color: #1a73e8; }
   <!-- Dark context strip -->
   <div class="topbar-context">
     <div class="topbar-context-left">
-      <span class="topbar-pill">📍 <strong>15</strong> active locations</span>
-      <span class="topbar-pill-sep">|</span>
-      <span class="topbar-pill">📅 <strong>Jan – Apr 2026</strong></span>
-      <span class="topbar-pill-sep">|</span>
-      <span class="topbar-pill">🗺 32 Scottish local authority areas analysed</span>
-      <span class="topbar-pill-sep">|</span>
-      <span class="topbar-pill">Source: <strong>Indeed · jladmin3 market data</strong></span>
-    </div>
-    <div class="topbar-context-right">
-      Prepared for: <strong>Managing Director</strong>
+      <span class="topbar-pill"><span class="pill-icon"></span><strong>15</strong> active locations</span>
+      <span class="topbar-pill"><span class="pill-icon"></span><strong>Jan – Apr 2026</strong></span>
+      <span class="topbar-pill"><span class="pill-icon"></span>32 Scottish local authority areas analysed</span>
+      <span class="topbar-pill"><span class="pill-icon"></span>Source: <strong>Indeed · jladmin3 market data</strong></span>
     </div>
   </div>
 
@@ -494,7 +495,7 @@ tr.callin-row td { font-weight: 700; color: #1a73e8; }
 (function(){
   const img = new Image();
   img.onload = function() {
-    img.style.cssText = 'height:46px;width:auto;object-fit:contain;display:block;';
+    img.style.cssText = 'height:50px;width:auto;object-fit:contain;display:block;';
     document.getElementById('topbar-logo').innerHTML = '';
     document.getElementById('topbar-logo').appendChild(img);
   };
