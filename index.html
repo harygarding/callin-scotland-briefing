@@ -71,7 +71,19 @@ body {
 }
 .topbar-logo-svg { height: 46px; width: 46px; }
 .topbar-report-label {
-  text-align: right;
+  text-align: center; flex: 1;
+}
+.topbar-powered {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;
+}
+.topbar-powered-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  color: #9aa0a6;
+}
+.indeed-wordmark {
+  height: 26px;
+  width: auto;
+  display: block;
 }
 .topbar-report-label h1 {
   font-size: 15px; font-weight: 700; color: #202124; letter-spacing: -0.2px;
@@ -209,6 +221,43 @@ tr.callin-row td { font-weight: 700; color: #1a73e8; }
 .comp-card-count { font-size: 36px; font-weight: 800; color: var(--accent); letter-spacing: -1px; line-height: 1; }
 .comp-card-label { font-size: 10px; color: var(--text-2); margin-top: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 .comp-card-areas { font-size: 11px; color: var(--text-3); margin-top: 12px; line-height: 1.7; border-top: 1px solid var(--border); padding-top: 10px; }
+
+/* ── Recommendations section ─────────────────────────────────── */
+.rec-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;
+}
+.rec-card {
+  border-radius: 12px; padding: 22px 24px; border: 1px solid var(--border);
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.rec-card-positive { background: #f0fdf4; border-color: #86efac; border-top: 4px solid #16a34a; }
+.rec-card-warning  { background: #fffbeb; border-color: #fcd34d; border-top: 4px solid #d97706; }
+.rec-card-alert    { background: #fef2f2; border-color: #fca5a5; border-top: 4px solid #dc2626; }
+.rec-card-icon { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+.rec-card-title {
+  font-size: 15px; font-weight: 800; color: var(--navy);
+  margin-bottom: 10px; letter-spacing: -0.2px;
+}
+.rec-card-body {
+  font-size: 12px; color: var(--text-2); line-height: 1.75;
+}
+.rec-card-body strong { color: var(--navy); font-weight: 700; }
+.rec-product { display: block; margin-top: 8px; }
+.rec-tag-psj {
+  display: inline-block; padding: 3px 9px; border-radius: 6px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px;
+  background: #1a73e8; color: #fff; margin-right: 4px; vertical-align: middle;
+}
+.rec-tag-eba {
+  display: inline-block; padding: 3px 9px; border-radius: 6px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px;
+  background: #7c3aed; color: #fff; margin-right: 4px; vertical-align: middle;
+}
+.rec-legend {
+  font-size: 12px; color: var(--text-2); line-height: 1.8;
+  border-top: 1px solid var(--border); padding-top: 16px; margin-top: 4px;
+}
+.rec-legend strong { color: var(--navy); }
 
 /* ── Gap bar ─────────────────────────────────────────────────── */
 .gap-bar-wrap { display: flex; align-items: center; gap: 8px; min-width: 120px; }
@@ -392,8 +441,9 @@ tr.callin-row td { font-weight: 700; color: #1a73e8; }
 
   <!-- White logo bar -->
   <div class="topbar-logo-row">
+
+    <!-- Client logo -->
     <div class="topbar-logo" id="topbar-logo">
-      <!-- SVG fallback — replaced by real logo automatically -->
       <svg class="topbar-logo-svg" viewBox="0 0 200 46" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="23" cy="23" r="22" fill="url(#lgg)"/>
         <defs>
@@ -406,10 +456,20 @@ tr.callin-row td { font-weight: 700; color: #1a73e8; }
         <text x="52" y="42" font-family="Inter,sans-serif" font-size="11" fill="#9c7bb5">Care at home services</text>
       </svg>
     </div>
-    <div class="topbar-report-label">
+
+    <!-- Centre: Report title -->
+    <div class="topbar-report-label" style="text-align:center;flex:1">
       <h1>Market Performance Briefing</h1>
-      <p>Scotland · Indeed jobs advertising data · January – April 2026</p>
+      <p>Scotland · January – April 2026</p>
     </div>
+
+    <!-- Powered by Indeed -->
+    <div class="topbar-powered">
+      <div class="topbar-powered-label">Powered by</div>
+      <img src="indeed-logo.svg" class="indeed-wordmark" alt="Indeed" onerror="this.style.display='none';document.getElementById('indeed-fallback').style.display='block'">
+      <div id="indeed-fallback" style="display:none;font-family:Inter,sans-serif;font-size:22px;font-weight:800;color:#003A9B;letter-spacing:-0.5px">indeed</div>
+    </div>
+
   </div>
 
   <!-- Dark context strip -->
@@ -684,6 +744,58 @@ tr.callin-row td { font-weight: 700; color: #1a73e8; }
 
   </div>
 
+  <!-- 7 · Recommendations -->
+  <div class="section">
+    <div class="section-hd">Takeaways &amp; Recommendations</div>
+    <div class="section-title">What the data tells us — and what to do next</div>
+    <p class="section-intro">
+      Based on the Jan–Apr 2026 Scotland market data, three clear themes emerge. Below are the recommended actions tied directly to what the numbers are showing.
+    </p>
+
+    <div class="rec-grid">
+
+      <div class="rec-card rec-card-positive">
+        <div class="rec-card-icon">📍</div>
+        <div class="rec-card-content">
+          <div class="rec-card-title">Protect your dominant positions</div>
+          <div class="rec-card-body">Call-In Homecare holds the #1 rank in <strong>Edinburgh, East Lothian, Midlothian, North Lanarkshire and Inverclyde</strong>. These are high-value locations with strong jobseeker penetration. The risk is complacency — competitors like Northcare Scotland and Cera Care are active in the same areas.<br><br>
+          <span class="rec-product"><span class="rec-tag-psj">PSJ</span> Maintain budget priority in these locations to hold rank 1.</span><br>
+          <span class="rec-product"><span class="rec-tag-eba">EBA</span> Run Employer Branded Ads to build brand recall — the 28–31% of jobseekers browsing without a keyword are your biggest brand opportunity.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rec-card rec-card-warning">
+        <div class="rec-card-icon">📈</div>
+        <div class="rec-card-content">
+          <div class="rec-card-title">Close the gap in competitive locations</div>
+          <div class="rec-card-body">In <strong>Glasgow City (rank 3), Renfrewshire (rank 5) and Dundee City (rank 5)</strong>, Call-In Homecare is visible but not leading. These are large markets — Glasgow alone represents 39,000+ jobseekers. Closing the gap to #1 here would significantly increase overall candidate reach.<br><br>
+          <span class="rec-product"><span class="rec-tag-psj">PSJ</span> Premium placement to outbid current rank 1 advertisers and capture more of the browse and keyword traffic.</span><br>
+          <span class="rec-product"><span class="rec-tag-eba">EBA</span> Branded ads reinforce Call-In Homecare as the recognisable name in the care space as candidates scroll the feed.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rec-card rec-card-alert">
+        <div class="rec-card-icon">🚀</div>
+        <div class="rec-card-content">
+          <div class="rec-card-title">Act on rising market costs before they compound</div>
+          <div class="rec-card-body">Investment per job has risen <strong>+84%</strong> since Jan 2024, cost per click <strong>+82%</strong>, and cost per apply start <strong>+52%</strong>. This is a market-wide trend driven by more employers competing for fewer jobs. Waiting means paying more later for the same results.<br><br>
+          <span class="rec-product"><span class="rec-tag-psj">PSJ</span> Locks in premium placement at current rates — delays increase cost to compete as more advertisers adopt premium.</span><br>
+          <span class="rec-product"><span class="rec-tag-eba">EBA</span> Branded impressions build an audience of passive candidates who return directly — reducing reliance on expensive keyword-driven clicks over time.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="rec-legend">
+      <span class="rec-tag-psj">PSJ</span> <strong>Premium Sponsored Jobs</strong> — Priority placement at the top of Indeed search results, above standard sponsored listings. Wins visibility in competitive bidding environments.<span style="margin:0 16px;color:var(--border)">|</span>
+      <span class="rec-tag-eba">EBA</span> <strong>Employer Branded Ads</strong> — Job listings displayed with Call-In Homecare's logo and brand. Turns browse traffic into brand recognition and differentiates listings in a crowded feed.
+    </div>
+
+  </div>
+
 </div><!-- /page -->
 
 <script>
@@ -696,12 +808,12 @@ const RANKS = {"DND":{"clickRank":5,"asRank":3},"EDH":{"clickRank":1,"asRank":1}
 const PEN = {"DND":{"penetration":0.1714,"attainment":2736,"marketJS":15962},"EDH":{"penetration":0.3334,"attainment":13172,"marketJS":39509},"EDU":{"penetration":0.4531,"attainment":3945,"marketJS":8706},"ELN":{"penetration":0.3056,"attainment":3919,"marketJS":12826},"ERW":{"penetration":0.0785,"attainment":704,"marketJS":8968},"FAL":{"penetration":0.0257,"attainment":504,"marketJS":19626},"GLG":{"penetration":0.2109,"attainment":8265,"marketJS":39197},"IVC":{"penetration":0.7098,"attainment":3908,"marketJS":5506},"MLN":{"penetration":0.3713,"attainment":3403,"marketJS":9164},"NLK":{"penetration":0.419,"attainment":6955,"marketJS":16600},"PKN":{"penetration":0.0865,"attainment":1620,"marketJS":18733},"RFW":{"penetration":0.2267,"attainment":3157,"marketJS":13928},"SLK":{"penetration":0.2486,"attainment":7246,"marketJS":29149},"WDU":{"penetration":0.2899,"attainment":1345,"marketJS":4640},"WLN":{"penetration":0.3285,"attainment":5033,"marketJS":15321}};
 
 const COMPETITORS = [
-  { name: 'Clickwise for Cera Care',     count: 7, areas: ['DND','ELN','MLN','NLK','SLK','WDU','WLN'] },
+  { name: 'Cera Care',                    count: 7, areas: ['DND','ELN','MLN','NLK','SLK','WDU','WLN'] },
   { name: 'Northcare Scotland',           count: 3, areas: ['EDH','GLG','SLK'] },
   { name: 'Care Response 24/7',           count: 3, areas: ['GLG','RFW','WLN'] },
   { name: 'Bright Care at Home Ltd',      count: 2, areas: ['DND','EDH'] },
-  { name: 'Apply Gateway / Care Concern', count: 2, areas: ['EDU','RFW'] },
-  { name: 'Talos360 / Meallmore UK',      count: 2, areas: ['GLG','IVC'] },
+  { name: 'Care Concern Group',           count: 2, areas: ['EDU','RFW'] },
+  { name: 'Meallmore UK',                 count: 2, areas: ['GLG','IVC'] },
 ];
 
 const CODES = Object.keys(DATA);
@@ -845,6 +957,7 @@ function renderKPIs() {
 }
 
 // ── Footprint table ──────────────────────────────────────────────────────────
+
 function renderFootprint() {
   const rows = pen_codes
     .sort((a,b) => DATA[b].callinClicks - DATA[a].callinClicks)
