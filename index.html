@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Call-In Homecare — Market Performance Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:       #202124;
+  --navy-mid:   #3c4043;
+  --navy-light: #e8f0fd;
+  --accent:     #1a73e8;
+  --accent-bg:  #e8f0fd;
+  --green:      #1e8e3e;
+  --green-bg:   #e6f4ea;
+  --amber:      #e37400;
+  --amber-bg:   #fef7e0;
+  --red:        #d93025;
+  --red-bg:     #fce8e6;
+  --bg:         #f0f2f5;
+  --surface:    #ffffff;
+  --border:     #e0e4ea;
+  --text:       #202124;
+  --text-2:     #5f6368;
+  --text-3:     #9aa0a6;
+  --stripe:     #fafbfc;
+  --row-hover:  #eef4ff;
+  --header-bg:  #f6f8fc;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+  --radius:     10px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ─────────────────────────────────────────────────── */
+.page { max-width: 1280px; margin: 0 auto; padding: 0 32px 80px; }
+
+/* ── Header ──────────────────────────────────────────────────── */
+.header-wrap { margin-bottom: 28px; box-shadow: 0 2px 16px rgba(0,0,0,.1); border-radius: 0 0 12px 12px; overflow: hidden; }
+
+/* White logo bar */
+.topbar-logo-row {
+  background: #ffffff;
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e8edf5;
+}
+.topbar-logo {
+  display: flex; align-items: center;
+}
+.topbar-logo img, .topbar-logo-svg {
+  height: 46px; width: auto; display: block;
+}
+.topbar-logo-svg { height: 46px; width: 46px; }
+.topbar-report-label {
+  text-align: right;
+}
+.topbar-report-label h1 {
+  font-size: 15px; font-weight: 700; color: #202124; letter-spacing: -0.2px;
+}
+.topbar-report-label p {
+  font-size: 11px; color: #5f6368; margin-top: 2px;
+}
+
+/* Dark context strip */
+.topbar-context {
+  background: #202124;
+  padding: 10px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid #1a73e8;
+}
+.topbar-context-left {
+  display: flex; align-items: center; gap: 20px;
+}
+.topbar-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 500;
+}
+.topbar-pill strong { color: #fff; font-weight: 600; }
+.topbar-pill-sep { color: rgba(255,255,255,0.2); font-size: 14px; }
+.topbar-context-right {
+  font-size: 11px; color: rgba(255,255,255,0.45); text-align: right;
+}
+.topbar-context-right strong { color: #1a73e8; font-weight: 600; }
+
+/* ── KPI strip ───────────────────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  margin-bottom: 32px;
+}
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  border-top: 3px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .15s, transform .15s;
+}
+.kpi:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.kpi-value { font-size: 26px; font-weight: 800; letter-spacing: -0.6px; line-height: 1; color: var(--navy); }
+.kpi-label { font-size: 10px; color: var(--text-2); margin-top: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+.kpi.accent  { border-top-color: var(--accent); }
+.kpi.accent  .kpi-value { color: var(--accent); }
+.kpi.green   { border-top-color: var(--green); }
+.kpi.green   .kpi-value { color: var(--green); }
+.kpi.amber   { border-top-color: var(--amber); }
+.kpi.amber   .kpi-value { color: var(--amber); }
+
+/* ── Section shell ───────────────────────────────────────────── */
+.section { margin-bottom: 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px 26px; }
+.section-hd {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--accent);
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+.section-hd::before { content:''; display:block; width:3px; height:14px; background:var(--accent); border-radius:2px; flex-shrink:0; }
+.section-title { font-size: 16px; font-weight: 700; color: var(--navy); letter-spacing: -0.3px; margin-bottom: 14px; }
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:700; }
+.badge-1    { background: var(--accent); color: #fff; }
+.badge-2    { background: var(--navy-light); color: var(--accent); }
+.badge-3    { background: #e8edf5; color: #3c4043; }
+.badge-5    { background: #f1f3f4; color: #5f6368; }
+.badge-none { background: #f1f3f4; color: var(--text-3); }
+
+.tag-green  { background: var(--green-bg); color: var(--green); border-radius: 5px; padding: 2px 7px; font-size: 11px; font-weight: 600; }
+.tag-amber  { background: var(--amber-bg); color: var(--amber); border-radius: 5px; padding: 2px 7px; font-size: 11px; font-weight: 600; }
+.tag-red    { background: var(--red-bg);   color: var(--red);   border-radius: 5px; padding: 2px 7px; font-size: 11px; font-weight: 600; }
+
+/* ── Tables ──────────────────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+.tbl-wrap.scrollable { max-height: 460px; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  background: var(--header-bg);
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--text-2);
+  padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border);
+  white-space: nowrap; position: sticky; top: 0; z-index: 1;
+}
+th.r, td.r { text-align: right; }
+th.c, td.c { text-align: center; }
+tbody tr:nth-child(even) { background: var(--stripe); }
+tbody tr:hover           { background: var(--row-hover); }
+tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; transition: background .1s; }
+tbody tr:last-child td { border-bottom: none; }
+td.name { font-weight: 600; }
+td.muted { color: var(--text-2); font-size: 12px; }
+
+/* Highlighted row */
+tr.callin-row { background: #eef4ff !important; }
+tr.callin-row td { font-weight: 700; color: #1a73e8; }
+
+/* ── Area pills ──────────────────────────────────────────────── */
+.pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.pill {
+  padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  background: #f1f3f4; color: var(--navy-mid); border: 1.5px solid transparent;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap; user-select: none;
+}
+.pill:hover  { background: var(--accent-bg); color: var(--accent); border-color: #1a73e8; }
+.pill.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px rgba(26,115,232,.3); }
+
+/* ── Chart card ──────────────────────────────────────────────── */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.chart-card { background: var(--header-bg); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+.stat-card { background: var(--navy-light); border-radius: 8px; text-align: center; border: 1px solid #d2e3fc; }
+.stat-value { font-size: 20px; font-weight: 800; color: var(--accent); letter-spacing: -0.4px; }
+.stat-label { font-size: 10px; color: var(--text-2); margin-top: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.chart-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--navy); }
+.chart-card p  { font-size: 11px; color: var(--text-2); margin-bottom: 14px; }
+.chart-wrap { position: relative; height: 220px; }
+
+/* ── Competitor cards ────────────────────────────────────────── */
+.comp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.comp-card {
+  background: var(--header-bg); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+  transition: box-shadow .15s, transform .15s;
+}
+.comp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.comp-card-name { font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--navy); line-height: 1.4; }
+.comp-card-count { font-size: 28px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+.comp-card-label { font-size: 10px; color: var(--text-2); margin-top: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.comp-card-areas { font-size: 11px; color: var(--text-3); margin-top: 10px; line-height: 1.6; border-top: 1px solid var(--border); padding-top: 8px; }
+
+/* ── Gap bar ─────────────────────────────────────────────────── */
+.gap-bar-wrap { display: flex; align-items: center; gap: 8px; min-width: 120px; }
+.gap-bar { height: 6px; border-radius: 3px; background: #e8edf5; flex: 1; overflow: hidden; }
+.gap-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+
+/* ── Insight cards ───────────────────────────────────────────── */
+.insight-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+.insight-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  border-left: 4px solid var(--accent);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .15s, transform .15s;
+}
+.insight-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.insight-card.positive { border-left-color: var(--green); }
+.insight-card.warning  { border-left-color: var(--amber); }
+.insight-card.alert    { border-left-color: var(--red); }
+.insight-icon  { font-size: 20px; margin-bottom: 10px; }
+.insight-head  { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; line-height: 1.35; }
+.insight-body  { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+.insight-body strong { color: var(--navy); font-weight: 700; }
+
+/* ── Section sub-label ───────────────────────────────────────── */
+/* ── Keyword signal board ────────────────────────────────────── */
+.kw-toggle {
+  display: flex; gap: 8px; margin-bottom: 20px;
+}
+.kw-tab {
+  padding: 7px 18px; border-radius: 20px; border: 1.5px solid var(--border);
+  background: var(--surface); font-size: 12px; font-weight: 600; color: var(--text-2);
+  cursor: pointer; transition: all .15s;
+}
+.kw-tab.active {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+.kw-panel { }
+.kw-signal-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;
+}
+.kw-col {
+  border-radius: 10px; border: 1.5px solid var(--border); padding: 14px;
+  background: var(--header-bg);
+}
+.kw-col-strength { border-top: 3px solid #16a34a; }
+.kw-col-par      { border-top: 3px solid #6b7280; }
+.kw-col-gap      { border-top: 3px solid #dc2626; }
+.kw-col-hd {
+  font-size: 12px; font-weight: 700; color: var(--navy);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.kw-col-badge {
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px;
+}
+.kw-badge-strength { background: #dcfce7; color: #15803d; }
+.kw-badge-par      { background: #f3f4f6; color: #374151; }
+.kw-badge-gap      { background: #fee2e2; color: #b91c1c; }
+
+.kw-tile {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px; margin-bottom: 6px; border-radius: 7px;
+  background: var(--surface); border: 1px solid var(--border);
+  font-size: 12px;
+}
+.kw-tile-label { font-weight: 600; color: var(--navy); flex: 1; }
+.kw-tile-pcts {
+  font-size: 10px; color: var(--text-2); text-align: right; margin: 0 8px;
+}
+.kw-tile-idx {
+  font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 8px; flex-shrink: 0;
+  min-width: 36px; text-align: center;
+}
+.kw-idx-strength { background: #dcfce7; color: #15803d; }
+.kw-idx-par      { background: #f3f4f6; color: #374151; }
+.kw-idx-gap      { background: #fee2e2; color: #b91c1c; }
+.kw-idx-none     { background: #fef9c3; color: #92400e; font-size: 9px; }
+
+.kw-chart-row {
+  display: flex; gap: 16px;
+}
+.kw-blank-card {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: #f0f4ff; border: 1.5px solid #c7d7f9; border-radius: 10px;
+  padding: 14px 18px; margin-bottom: 16px;
+}
+.kw-blank-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+.kw-blank-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.kw-blank-desc { font-size: 11px; color: var(--text-2); line-height: 1.6; margin-bottom: 8px; }
+.kw-blank-stats {
+  display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  font-size: 11px; color: var(--navy);
+}
+
+/* ── MoM section ─────────────────────────────────────────────── */
+.mom-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0 20px;
+}
+.mom-stat-box {
+  background: var(--header-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.mom-delta {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+.mom-delta.neg    { color: #ef4444; }
+.mom-delta.bad    { color: #ef4444; }
+.mom-delta.stable { color: #14b8a6; }
+
+.mom-chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+.mom-chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+.mom-chart-card h4 {
+  font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 3px;
+}
+.mom-chart-card .mom-chart-sub {
+  font-size: 11px; color: var(--text-2); margin-bottom: 14px;
+}
+.mom-chart-wrap { position: relative; height: 260px; }
+.mom-divider {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+  color: var(--text-2); margin: 20px 0 4px; border-bottom: 1px solid var(--border); padding-bottom: 8px;
+}
+
+/* ── Section intro ───────────────────────────────────────────── */
+.section-intro {
+  font-size: 12px; color: var(--text-2); margin-bottom: 18px;
+  line-height: 1.7; padding-bottom: 14px; border-bottom: 1px solid var(--border);
+}
+.section-intro strong { color: var(--navy); font-weight: 600; }
+
+/* ── Tier badges ─────────────────────────────────────────────── */
+.tier { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap; }
+.tier-dominant    { background: #e6f4ea; color: #1e8e3e; }
+.tier-leading     { background: #e8f0fd; color: #1a73e8; }
+.tier-competitive { background: #fef7e0; color: #e37400; }
+.tier-building    { background: #f1f3f4; color: #5f6368; }
+
+@media (max-width: 1100px) {
+  .insight-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 1000px) {
+  .kpi-grid  { grid-template-columns: repeat(3, 1fr); }
+  .comp-grid { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .topbar { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header-wrap">
+
+  <!-- White logo bar -->
+  <div class="topbar-logo-row">
+    <div class="topbar-logo" id="topbar-logo">
+      <!-- SVG fallback — replaced by real logo automatically -->
+      <svg class="topbar-logo-svg" viewBox="0 0 200 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="23" cy="23" r="22" fill="url(#lgg)"/>
+        <defs>
+          <radialGradient id="lgg" cx="35%" cy="28%" r="75%">
+            <stop offset="0%" stop-color="#b39ddb"/>
+            <stop offset="100%" stop-color="#7b1fa2"/>
+          </radialGradient>
+        </defs>
+        <text x="52" y="28" font-family="Inter,sans-serif" font-size="18" font-weight="700" fill="#3d2260">Call-In Homecare</text>
+        <text x="52" y="42" font-family="Inter,sans-serif" font-size="11" fill="#9c7bb5">Care at home services</text>
+      </svg>
+    </div>
+    <div class="topbar-report-label">
+      <h1>Market Performance Briefing</h1>
+      <p>Scotland · Indeed jobs advertising data · January – April 2026</p>
+    </div>
+  </div>
+
+  <!-- Dark context strip -->
+  <div class="topbar-context">
+    <div class="topbar-context-left">
+      <span class="topbar-pill">📍 <strong>15</strong> active markets</span>
+      <span class="topbar-pill-sep">|</span>
+      <span class="topbar-pill">📅 <strong>Jan – Apr 2026</strong></span>
+      <span class="topbar-pill-sep">|</span>
+      <span class="topbar-pill">🗺 32 Scottish local authority areas analysed</span>
+      <span class="topbar-pill-sep">|</span>
+      <span class="topbar-pill">Source: <strong>Indeed · jladmin3 market data</strong></span>
+    </div>
+    <div class="topbar-context-right">
+      Prepared for: <strong>Managing Director</strong>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const img = new Image();
+  img.onload = function() {
+    img.style.cssText = 'height:46px;width:auto;object-fit:contain;display:block;';
+    document.getElementById('topbar-logo').innerHTML = '';
+    document.getElementById('topbar-logo').appendChild(img);
+  };
+  img.src = 'call-in-logo.png';
+})();
+</script>
+
+<div class="page">
+
+  <!-- Insight summary -->
+  <div class="insight-grid" id="insight-grid"></div>
+
+  <!-- KPI strip -->
+  <div class="kpi-grid" id="kpi-strip"></div>
+
+  <!-- Market context: MoM trends -->
+  <div class="section">
+    <div class="section-hd">Market Context</div>
+    <div class="section-title">Scotland personal care market — Jan 2024 to Apr 2026</div>
+    <p class="section-intro">
+      Two years of month-on-month data tells a consistent story: <strong>the market is contracting</strong> — fewer jobs posted, fewer jobseekers searching — but the ratio of candidates to available roles has held up well, meaning the <strong>talent pool remains proportionate</strong>. The bigger challenge is financial: market competition has driven costs significantly higher, making every hire more expensive to attract.
+    </p>
+
+    <!-- Talent supply narrative -->
+    <div class="mom-divider">Talent supply &amp; job volume</div>
+    <div class="mom-stat-row">
+      <div class="mom-stat-box" id="mom-stat-js"></div>
+      <div class="mom-stat-box" id="mom-stat-jobs"></div>
+      <div class="mom-stat-box" id="mom-stat-jsp"></div>
+    </div>
+
+    <!-- Financial narrative -->
+    <div class="mom-divider">Cost &amp; investment pressure</div>
+    <div class="mom-stat-row">
+      <div class="mom-stat-box" id="mom-stat-inv"></div>
+      <div class="mom-stat-box" id="mom-stat-cpc"></div>
+      <div class="mom-stat-box" id="mom-stat-cpas"></div>
+    </div>
+
+    <div class="mom-chart-grid">
+      <div class="mom-chart-card">
+        <h4>Jobseeker traffic &amp; job volume</h4>
+        <div class="mom-chart-sub">Both declining — but jobseekers per job remains ~40–44, showing candidate intent stays strong relative to opportunity</div>
+        <div class="mom-chart-wrap"><canvas id="chart-mom-supply"></canvas></div>
+      </div>
+      <div class="mom-chart-card">
+        <h4>Investment &amp; cost efficiency</h4>
+        <div class="mom-chart-sub">Investment per job has nearly doubled since Jan 2024 — driven by rising CPC and CPAS as more employers compete for the same talent pool</div>
+        <div class="mom-chart-wrap"><canvas id="chart-mom-cost"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1 · Where you stand -->
+  <div class="section">
+    <div class="section-hd">Section 1</div>
+    <div class="section-title">Where you stand — market position across all active locations</div>
+    <p class="section-intro">
+      Your <strong>tier</strong> reflects click rank and candidate penetration combined.
+      <span class="tier tier-dominant">Dominant</span> = #1 rank + &gt;40% penetration &nbsp;
+      <span class="tier tier-leading">Leading</span> = #1–2 rank + strong penetration &nbsp;
+      <span class="tier tier-competitive">Competitive</span> = top 5 or 15–25% penetration &nbsp;
+      <span class="tier tier-building">Building</span> = early presence, significant headroom.
+    </p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th class="c">Tier</th>
+            <th class="c">Click rank</th>
+            <th class="c">AS rank</th>
+            <th class="r">Click share</th>
+            <th class="r">Apply starts</th>
+            <th class="r">Apply rate</th>
+            <th class="r">JS penetration</th>
+            <th class="r">Gap to #1</th>
+          </tr>
+        </thead>
+        <tbody id="footprint-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2 · Candidate penetration -->
+  <div class="section">
+    <div class="section-hd">Section 2</div>
+    <div class="section-title">Candidate reach — how much of each market you're accessing</div>
+    <p class="section-intro">
+      Penetration % = Call-In Homecare jobseeker attainment ÷ total available jobseekers in that market.
+      This tells you how much of the candidate pool you're actually reaching — and how much is still out there.
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+      <div class="chart-card">
+        <h4>Jobseeker penetration % by location</h4>
+        <p>Sorted highest to lowest · green ≥40% · amber 20–39% · red &lt;20%</p>
+        <div class="chart-wrap" style="height:340px"><canvas id="chart-penetration"></canvas></div>
+      </div>
+      <div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Location</th>
+                <th class="c">Click rank</th>
+                <th class="c">AS rank</th>
+                <th class="r">Reached</th>
+                <th class="r">Available</th>
+                <th class="r">Penetration</th>
+              </tr>
+            </thead>
+            <tbody id="penetration-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 · Area by area -->
+  <div class="section">
+    <div class="section-hd">Section 3</div>
+    <div class="section-title">Area by area — your competitive position in each market</div>
+    <p class="section-intro">Select a location to see the full competitive landscape and where Call-In Homecare sits within it.</p>
+    <div class="pills" id="area-pills"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+      <div>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
+          <div id="area-title" style="font-size:16px;font-weight:700;color:var(--navy)"></div>
+          <div id="area-tier-badge"></div>
+        </div>
+        <div id="area-sub" style="font-size:12px;color:var(--text-2);margin-bottom:12px"></div>
+        <div id="area-pen-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px"></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="c">#</th>
+                <th>Advertiser</th>
+                <th class="r">Click share</th>
+                <th class="r">AS share</th>
+                <th class="r">Apply rate</th>
+              </tr>
+            </thead>
+            <tbody id="drilldown-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h4>Clicks by advertiser</h4>
+        <p id="chart-area-sub"></p>
+        <div class="chart-wrap"><canvas id="chart-area"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 · Competitive landscape -->
+  <div class="section">
+    <div class="section-hd">Section 4</div>
+    <div class="section-title">Competitive landscape — who you're up against most often</div>
+    <p class="section-intro">These advertisers appear alongside Call-In Homecare most frequently across your active markets. Understanding their strengths helps prioritise where to defend and where to attack.</p>
+    <div class="comp-grid" id="comp-grid"></div>
+  </div>
+
+  <!-- 5 · Growth markets -->
+  <div class="section">
+    <div class="section-hd">Section 5</div>
+    <div class="section-title">Growth markets — where to go next</div>
+    <p class="section-intro">
+      Areas where Call-In Homecare either has early presence but low penetration, or no presence at all.
+      Sorted by market size — bigger markets represent more candidate volume to unlock.
+    </p>
+    <div class="tbl-wrap scrollable">
+      <table>
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th class="c">Our position</th>
+            <th class="r">Market clicks</th>
+            <th class="r">Available JS</th>
+            <th class="r">We've reached</th>
+            <th class="r">Penetration</th>
+            <th>Market leader</th>
+            <th class="r">Leader apply rate</th>
+          </tr>
+        </thead>
+        <tbody id="opp-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6 · Keyword analysis -->
+  <div class="section">
+    <div class="section-hd">Section 6</div>
+    <div class="section-title">Keyword signals — how jobseekers find Call-In Homecare vs the wider market</div>
+    <p class="section-intro">
+      The <strong>index</strong> measures whether a keyword over- or under-delivers for Call-In Homecare relative to the market.
+      Above 110 = you over-index (strength). Below 80 = the market relies on it more than you do (gap to explore).
+    </p>
+
+    <!-- Category toggle -->
+    <div class="kw-toggle" id="kw-toggle">
+      <button class="kw-tab active" onclick="switchKwTab('care',this)">🏥 Care — signals</button>
+      <button class="kw-tab" onclick="switchKwTab('care-list',this)">📋 Care — full keyword list</button>
+    </div>
+
+    <!-- Care panel -->
+    <div id="kw-panel-care" class="kw-panel">
+      <div id="kw-blank-care"></div>
+      <div class="kw-signal-grid">
+        <div class="kw-col kw-col-strength">
+          <div class="kw-col-hd">Strengths <span class="kw-col-badge kw-badge-strength">Over-index ›110</span></div>
+          <div id="kw-tiles-care-strength"></div>
+        </div>
+        <div class="kw-col kw-col-par">
+          <div class="kw-col-hd">On par <span class="kw-col-badge kw-badge-par">Index 80–110</span></div>
+          <div id="kw-tiles-care-par"></div>
+        </div>
+        <div class="kw-col kw-col-gap">
+          <div class="kw-col-hd">Market gaps <span class="kw-col-badge kw-badge-gap">Under-index ‹80</span></div>
+          <div id="kw-tiles-care-gap"></div>
+        </div>
+      </div>
+      <div class="kw-chart-row">
+        <div class="chart-card" style="flex:1">
+          <h4>Index by keyword — Care</h4>
+          <p>How much Call-In Homecare over- or under-indexes vs the market · 100 = perfectly aligned</p>
+          <div class="chart-wrap" style="height:200px"><canvas id="chart-kw-care"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Care full list panel -->
+    <div id="kw-panel-care-list" class="kw-panel" style="display:none">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Keyword</th>
+            <th class="r">Call-In Homecare %</th>
+            <th class="r">Market %</th>
+            <th class="c">Index</th>
+            <th class="c">Signal</th>
+          </tr></thead>
+          <tbody id="kw-full-care-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /page -->
+
+<script>
+const DATA = {"ABD":{"county":"Aberdeenshire","totalClients":50,"marketClicks":44052,"marketApplyStarts":9124,"marketJobs":158,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Clickwise for Cera Care [34722017]","clicks":10501,"applyStarts":1297,"applyRate":0.124,"jobs":54,"isCallin":false},{"name":"My Care Grampian [12400269]","clicks":5002,"applyStarts":2000,"applyRate":0.4,"jobs":2,"isCallin":false},{"name":"Ann Inspired Care [2877670]","clicks":3726,"applyStarts":855,"applyRate":0.229,"jobs":6,"isCallin":false},{"name":"Anavo Care (Scot) Ltd - Burnside [62018332]","clicks":2300,"applyStarts":772,"applyRate":0.336,"jobs":13,"isCallin":false},{"name":"Fly Cup Enterprises Ltd [17889611]","clicks":2296,"applyStarts":299,"applyRate":0.13,"jobs":2,"isCallin":false}]},"ABE":{"county":"Aberdeen City","totalClients":43,"marketClicks":78217,"marketApplyStarts":15533,"marketJobs":101,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"My Care Grampian [12400269]","clicks":9743,"applyStarts":1564,"applyRate":0.161,"jobs":2,"isCallin":false},{"name":"Ann Inspired Care [2877670]","clicks":9018,"applyStarts":1457,"applyRate":0.162,"jobs":4,"isCallin":false},{"name":"Peaky Minders [64820163]","clicks":8928,"applyStarts":1077,"applyRate":0.121,"jobs":1,"isCallin":false},{"name":"Camphill School Aberdeen [16988703]","clicks":5415,"applyStarts":829,"applyRate":0.153,"jobs":1,"isCallin":false},{"name":"Renaissance Care [2158183]","clicks":4331,"applyStarts":1703,"applyRate":0.393,"jobs":6,"isCallin":false}]},"AGB":{"county":"Argyll and Bute","totalClients":16,"marketClicks":10425,"marketApplyStarts":2454,"marketJobs":83,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Apply Gateway Ltd. for Care Concern Group [74715828]","clicks":3359,"applyStarts":1259,"applyRate":0.375,"jobs":46,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":2507,"applyStarts":449,"applyRate":0.179,"jobs":14,"isCallin":false},{"name":"B.A.S.I.C. and Corner House Nursery [41605013]","clicks":977,"applyStarts":164,"applyRate":0.168,"jobs":4,"isCallin":false},{"name":"Carr Gomm [22267171]","clicks":938,"applyStarts":106,"applyRate":0.113,"jobs":4,"isCallin":false},{"name":"Affinity Trust [10683232]","clicks":816,"applyStarts":68,"applyRate":0.083,"jobs":8,"isCallin":false}]},"ANS":{"county":"Angus","totalClients":32,"marketClicks":38448,"marketApplyStarts":7961,"marketJobs":143,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Scotia Care [34950750]","clicks":10432,"applyStarts":2427,"applyRate":0.233,"jobs":45,"isCallin":false},{"name":"Balhousie Care Group [23197907]","clicks":7330,"applyStarts":1703,"applyRate":0.232,"jobs":38,"isCallin":false},{"name":"My Care Grampian [12400269]","clicks":4241,"applyStarts":1023,"applyRate":0.241,"jobs":2,"isCallin":false},{"name":"Prestige Nursing & Care [1567923]","clicks":3316,"applyStarts":474,"applyRate":0.143,"jobs":19,"isCallin":false},{"name":"Oran Homecare [673438]","clicks":2728,"applyStarts":452,"applyRate":0.166,"jobs":8,"isCallin":false}]},"CLK":{"county":"Clackmannanshire","totalClients":12,"marketClicks":9973,"marketApplyStarts":1792,"marketJobs":40,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Clickwise for Cera Care [34722017]","clicks":4033,"applyStarts":624,"applyRate":0.155,"jobs":19,"isCallin":false},{"name":"Talos360 limited for Meallmore UK [62557308]","clicks":1019,"applyStarts":303,"applyRate":0.297,"jobs":3,"isCallin":false},{"name":"Ailsa Response [29586886]","clicks":953,"applyStarts":182,"applyRate":0.191,"jobs":1,"isCallin":false},{"name":"Scotia Care [34950750]","clicks":908,"applyStarts":141,"applyRate":0.155,"jobs":3,"isCallin":false},{"name":"Apply Gateway Ltd. for Aria Care [74636797]","clicks":709,"applyStarts":182,"applyRate":0.257,"jobs":7,"isCallin":false}]},"DGY":{"county":"Dumfries and Galloway","totalClients":50,"marketClicks":33897,"marketApplyStarts":6680,"marketJobs":162,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"ADVINIA CARE HOMES LIMITED [24283095]","clicks":6306,"applyStarts":2197,"applyRate":0.348,"jobs":24,"isCallin":false},{"name":"Oliver Raine For Community Integrated Care (CIC) [8507398]","clicks":2147,"applyStarts":452,"applyRate":0.211,"jobs":4,"isCallin":false},{"name":"AudienceLink for CareTech - Central Division [75409320]","clicks":2097,"applyStarts":211,"applyRate":0.101,"jobs":7,"isCallin":false},{"name":"Care Solutions Homecare Limited [9615813]","clicks":2090,"applyStarts":327,"applyRate":0.156,"jobs":6,"isCallin":false},{"name":"Horizon healthcare ltd, Dryfemount Resident Care Home [2162477]","clicks":1949,"applyStarts":262,"applyRate":0.134,"jobs":4,"isCallin":false}]},"DND":{"county":"Dundee City","totalClients":46,"marketClicks":72190,"marketApplyStarts":15035,"marketJobs":119,"callinRank":5,"callinClicks":4249,"callinApplyStarts":1372,"callinApplyRate":0.323,"callinJobs":6,"callinInTop5":true,"top5":[{"name":"My Care Grampian [12400269]","clicks":8342,"applyStarts":1703,"applyRate":0.204,"jobs":2,"isCallin":false},{"name":"My Homecare Dundee [12429984]","clicks":7253,"applyStarts":1824,"applyRate":0.251,"jobs":4,"isCallin":false},{"name":"Bright Care at Home Ltd [3625669]","clicks":6592,"applyStarts":1008,"applyRate":0.153,"jobs":12,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":5023,"applyStarts":665,"applyRate":0.132,"jobs":10,"isCallin":false},{"name":"Call-In Homecare Ltd. [1048214]","clicks":4249,"applyStarts":1372,"applyRate":0.323,"jobs":6,"isCallin":true}]},"EAY":{"county":"East Ayrshire","totalClients":42,"marketClicks":58345,"marketApplyStarts":14257,"marketJobs":142,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Graceland Nursing Home Limited [4348657]","clicks":8658,"applyStarts":3568,"applyRate":0.412,"jobs":6,"isCallin":false},{"name":"Thorntoun (Ayrshire) Limited [18288496]","clicks":6192,"applyStarts":2140,"applyRate":0.346,"jobs":8,"isCallin":false},{"name":"Phoenix Abbey [52441789]","clicks":4807,"applyStarts":995,"applyRate":0.207,"jobs":12,"isCallin":false},{"name":"Apply Gateway Ltd. for The National Autistic Society [77828746]","clicks":4685,"applyStarts":719,"applyRate":0.153,"jobs":13,"isCallin":false},{"name":"Crossgate Care Home [24262385]","clicks":4326,"applyStarts":1192,"applyRate":0.276,"jobs":8,"isCallin":false}]},"EDH":{"county":"City of Edinburgh","totalClients":94,"marketClicks":197100,"marketApplyStarts":47537,"marketJobs":318,"callinRank":1,"callinClicks":20808,"callinApplyStarts":5348,"callinApplyRate":0.257,"callinJobs":26,"callinInTop5":true,"top5":[{"name":"Call-In Homecare Ltd. [1048214]","clicks":20808,"applyStarts":5348,"applyRate":0.257,"jobs":26,"isCallin":true},{"name":"Northcare Scotland [23424570]","clicks":13778,"applyStarts":4997,"applyRate":0.363,"jobs":5,"isCallin":false},{"name":"Bright Care at Home Ltd [3625669]","clicks":9672,"applyStarts":1746,"applyRate":0.181,"jobs":13,"isCallin":false},{"name":"MyLife Homecare Edinburgh [44939937]","clicks":9417,"applyStarts":2812,"applyRate":0.299,"jobs":13,"isCallin":false},{"name":"Professional Carers [2543023]","clicks":8596,"applyStarts":1827,"applyRate":0.213,"jobs":4,"isCallin":false}]},"EDU":{"county":"East Dunbartonshire","totalClients":17,"marketClicks":24819,"marketApplyStarts":5849,"marketJobs":92,"callinRank":2,"callinClicks":5189,"callinApplyStarts":1021,"callinApplyRate":0.197,"callinJobs":12,"callinInTop5":true,"top5":[{"name":"Apply Gateway Ltd. for Care Concern Group [74715828]","clicks":6107,"applyStarts":2582,"applyRate":0.423,"jobs":58,"isCallin":false},{"name":"Call-In Homecare Ltd. [1048214]","clicks":5189,"applyStarts":1021,"applyRate":0.197,"jobs":12,"isCallin":true},{"name":"Bluebird Care Dunbartonshire [33334807]","clicks":3584,"applyStarts":577,"applyRate":0.161,"jobs":1,"isCallin":false},{"name":"Percurra East Dunbartonshire [63661013]","clicks":2772,"applyStarts":409,"applyRate":0.148,"jobs":5,"isCallin":false},{"name":"Imagine Care [60476440]","clicks":2380,"applyStarts":284,"applyRate":0.119,"jobs":3,"isCallin":false}]},"ELN":{"county":"East Lothian","totalClients":25,"marketClicks":29321,"marketApplyStarts":7482,"marketJobs":92,"callinRank":1,"callinClicks":5593,"callinApplyStarts":1280,"callinApplyRate":0.229,"callinJobs":19,"callinInTop5":true,"top5":[{"name":"Call-In Homecare Ltd. [1048214]","clicks":5593,"applyStarts":1280,"applyRate":0.229,"jobs":19,"isCallin":true},{"name":"Clickwise for Cera Care [34722017]","clicks":3447,"applyStarts":651,"applyRate":0.189,"jobs":20,"isCallin":false},{"name":"Randolph Hill Nursing Home Group [9096338]","clicks":3307,"applyStarts":1225,"applyRate":0.37,"jobs":2,"isCallin":false},{"name":"St Anne's Care Home [15799673]","clicks":2968,"applyStarts":947,"applyRate":0.319,"jobs":3,"isCallin":false},{"name":"Leuchie [23311957]","clicks":1835,"applyStarts":401,"applyRate":0.219,"jobs":4,"isCallin":false}]},"ELS":{"county":"Na h-Eileanan an Iar","totalClients":1,"marketClicks":1069,"marketApplyStarts":95,"marketJobs":2,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Action for Children [6935269]","clicks":1069,"applyStarts":95,"applyRate":0.089,"jobs":2,"isCallin":false}]},"ERW":{"county":"East Renfrewshire","totalClients":17,"marketClicks":20721,"marketApplyStarts":5007,"marketJobs":47,"callinRank":9,"callinClicks":806,"callinApplyStarts":175,"callinApplyRate":0.217,"callinJobs":1,"callinInTop5":false,"top5":[{"name":"Peoples Care Solutions by Christina's Home Care [61953513]","clicks":3907,"applyStarts":853,"applyRate":0.218,"jobs":6,"isCallin":false},{"name":"Beeches Homecare [13705563]","clicks":3052,"applyStarts":286,"applyRate":0.094,"jobs":2,"isCallin":false},{"name":"Age Concern Eastwood Dementia Project [47924716]","clicks":2952,"applyStarts":510,"applyRate":0.173,"jobs":2,"isCallin":false},{"name":"WeLove9am - Hamberley Care Homes [70238016]","clicks":2509,"applyStarts":1008,"applyRate":0.402,"jobs":3,"isCallin":false},{"name":"Apply Gateway Ltd. for Care Concern Group [74715828]","clicks":2198,"applyStarts":899,"applyRate":0.409,"jobs":13,"isCallin":false}]},"FAL":{"county":"Falkirk","totalClients":52,"marketClicks":85229,"marketApplyStarts":17866,"marketJobs":178,"callinRank":32,"callinClicks":563,"callinApplyStarts":140,"callinApplyRate":0.249,"callinJobs":3,"callinInTop5":false,"top5":[{"name":"Ailsa Forth Valley (formerly Ailsa Care Services Ltd) [60955806]","clicks":12031,"applyStarts":1678,"applyRate":0.139,"jobs":19,"isCallin":false},{"name":"Ion Care and Support Services [8962571]","clicks":8875,"applyStarts":1278,"applyRate":0.144,"jobs":26,"isCallin":false},{"name":"Avondale Care Scotland [748706]","clicks":6042,"applyStarts":2156,"applyRate":0.357,"jobs":4,"isCallin":false},{"name":"ADVINIA CARE HOMES LIMITED [24283095]","clicks":4532,"applyStarts":1891,"applyRate":0.417,"jobs":7,"isCallin":false},{"name":"Glenbervie Care [54773366]","clicks":4134,"applyStarts":1432,"applyRate":0.346,"jobs":6,"isCallin":false}]},"FIF":{"county":"Fife","totalClients":78,"marketClicks":129598,"marketApplyStarts":25827,"marketJobs":429,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Clickwise for Cera Care [34722017]","clicks":13025,"applyStarts":1756,"applyRate":0.135,"jobs":67,"isCallin":false},{"name":"Holmes Care Group [7391124]","clicks":12612,"applyStarts":3321,"applyRate":0.263,"jobs":39,"isCallin":false},{"name":"Abbotsford Care (Glenrothes) Ltd [2466561]","clicks":9016,"applyStarts":2441,"applyRate":0.271,"jobs":47,"isCallin":false},{"name":"Kingdom Group [61382906]","clicks":8466,"applyStarts":1018,"applyRate":0.12,"jobs":13,"isCallin":false},{"name":"Oran Homecare [673438]","clicks":4846,"applyStarts":728,"applyRate":0.15,"jobs":12,"isCallin":false}]},"GLG":{"county":"Glasgow City","totalClients":90,"marketClicks":232040,"marketApplyStarts":54413,"marketJobs":266,"callinRank":3,"callinClicks":12500,"callinApplyStarts":2551,"callinApplyRate":0.204,"callinJobs":14,"callinInTop5":true,"top5":[{"name":"Care Response 24/7 [16518370]","clicks":33783,"applyStarts":4479,"applyRate":0.133,"jobs":5,"isCallin":false},{"name":"Northcare Scotland [23424570]","clicks":29063,"applyStarts":10395,"applyRate":0.358,"jobs":13,"isCallin":false},{"name":"Call-In Homecare Ltd. [1048214]","clicks":12500,"applyStarts":2551,"applyRate":0.204,"jobs":14,"isCallin":true},{"name":"Aspire Housing and Personal Development Services [775535]","clicks":10531,"applyStarts":1901,"applyRate":0.181,"jobs":8,"isCallin":false},{"name":"Talos360 limited for Meallmore UK [62557308]","clicks":9881,"applyStarts":2969,"applyRate":0.3,"jobs":39,"isCallin":false}]},"HLD":{"county":"Highland","totalClients":55,"marketClicks":62056,"marketApplyStarts":12029,"marketJobs":209,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Talos360 limited for Meallmore UK [62557308]","clicks":8286,"applyStarts":2433,"applyRate":0.294,"jobs":57,"isCallin":false},{"name":"Gateway - Highland Homeless Trust [41254111]","clicks":3846,"applyStarts":387,"applyRate":0.101,"jobs":14,"isCallin":false},{"name":"Sanctuary Care [71513194]","clicks":3662,"applyStarts":1047,"applyRate":0.286,"jobs":17,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":3330,"applyStarts":746,"applyRate":0.224,"jobs":7,"isCallin":false},{"name":"Highland Home Carers Ltd [23423154]","clicks":3118,"applyStarts":515,"applyRate":0.165,"jobs":8,"isCallin":false}]},"IVC":{"county":"Inverclyde","totalClients":17,"marketClicks":13637,"marketApplyStarts":3568,"marketJobs":50,"callinRank":1,"callinClicks":4984,"callinApplyStarts":1072,"callinApplyRate":0.215,"callinJobs":7,"callinInTop5":true,"top5":[{"name":"Call-In Homecare Ltd. [1048214]","clicks":4984,"applyStarts":1072,"applyRate":0.215,"jobs":7,"isCallin":true},{"name":"Anavo Care (Scot) Ltd - Newark [62018791]","clicks":1997,"applyStarts":837,"applyRate":0.419,"jobs":8,"isCallin":false},{"name":"Invercare Services Ltd [23563867]","clicks":1924,"applyStarts":486,"applyRate":0.253,"jobs":11,"isCallin":false},{"name":"Talos360 limited for Meallmore UK [62557308]","clicks":1894,"applyStarts":492,"applyRate":0.26,"jobs":10,"isCallin":false},{"name":"Home Instead Inverclyde & North Ayrshire [59913061]","clicks":1071,"applyStarts":217,"applyRate":0.203,"jobs":2,"isCallin":false}]},"MLN":{"county":"Midlothian","totalClients":17,"marketClicks":20310,"marketApplyStarts":4980,"marketJobs":72,"callinRank":1,"callinClicks":5052,"callinApplyStarts":1229,"callinApplyRate":0.243,"callinJobs":16,"callinInTop5":true,"top5":[{"name":"Call-In Homecare Ltd. [1048214]","clicks":5052,"applyStarts":1229,"applyRate":0.243,"jobs":16,"isCallin":true},{"name":"The Care Social Network for Visiting Angels for Edinburgh and The Lothians [77122512]","clicks":2884,"applyStarts":533,"applyRate":0.185,"jobs":8,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":2840,"applyStarts":616,"applyRate":0.217,"jobs":10,"isCallin":false},{"name":"Phoenix Abbey [52441789]","clicks":2695,"applyStarts":471,"applyRate":0.175,"jobs":6,"isCallin":false},{"name":"Apply Gateway Ltd. for Barchester Healthcare [69586805]","clicks":2643,"applyStarts":998,"applyRate":0.378,"jobs":9,"isCallin":false}]},"MRY":{"county":"Moray","totalClients":20,"marketClicks":12872,"marketApplyStarts":2821,"marketJobs":65,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Parklands Care Homes [6990150]","clicks":4635,"applyStarts":1333,"applyRate":0.288,"jobs":13,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":2977,"applyStarts":358,"applyRate":0.12,"jobs":28,"isCallin":false},{"name":"Renaissance Care [2158183]","clicks":1353,"applyStarts":414,"applyRate":0.306,"jobs":7,"isCallin":false},{"name":"Nightingale Home Support [64559955]","clicks":1332,"applyStarts":217,"applyRate":0.163,"jobs":1,"isCallin":false},{"name":"Action for Children [6935269]","clicks":857,"applyStarts":131,"applyRate":0.153,"jobs":2,"isCallin":false}]},"NAY":{"county":"North Ayrshire","totalClients":34,"marketClicks":44330,"marketApplyStarts":9010,"marketJobs":119,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"ENHANCE HEALTHCARE LTD [76894624]","clicks":7314,"applyStarts":1798,"applyRate":0.246,"jobs":4,"isCallin":false},{"name":"The Bailey Household [31473807]","clicks":4478,"applyStarts":157,"applyRate":0.035,"jobs":1,"isCallin":false},{"name":"Home Instead Inverclyde & North Ayrshire [59913061]","clicks":3795,"applyStarts":794,"applyRate":0.209,"jobs":4,"isCallin":false},{"name":"Aspris Childrens Services [51198699]","clicks":3520,"applyStarts":509,"applyRate":0.145,"jobs":26,"isCallin":false},{"name":"Care Response 24/7 [16518370]","clicks":2321,"applyStarts":340,"applyRate":0.146,"jobs":1,"isCallin":false}]},"NLK":{"county":"North Lanarkshire","totalClients":52,"marketClicks":86012,"marketApplyStarts":16596,"marketJobs":240,"callinRank":1,"callinClicks":11805,"callinApplyStarts":2702,"callinApplyRate":0.229,"callinJobs":31,"callinInTop5":true,"top5":[{"name":"Call-In Homecare Ltd. [1048214]","clicks":11805,"applyStarts":2702,"applyRate":0.229,"jobs":31,"isCallin":true},{"name":"ST PHILIP'S SCHOOL [68467719]","clicks":8400,"applyStarts":819,"applyRate":0.098,"jobs":3,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":6609,"applyStarts":882,"applyRate":0.133,"jobs":34,"isCallin":false},{"name":"Oakmont Care Services [79738859]","clicks":6607,"applyStarts":1655,"applyRate":0.25,"jobs":36,"isCallin":false},{"name":"Home Instead South Lanarkshire [20424378]","clicks":6022,"applyStarts":1121,"applyRate":0.186,"jobs":10,"isCallin":false}]},"ORK":{"county":"Orkney","totalClients":1,"marketClicks":88,"marketApplyStarts":23,"marketJobs":1,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Right There [10096140]","clicks":88,"applyStarts":23,"applyRate":0.261,"jobs":1,"isCallin":false}]},"PKN":{"county":"Perth and Kinross","totalClients":64,"marketClicks":92716,"marketApplyStarts":19725,"marketJobs":301,"callinRank":15,"callinClicks":2322,"callinApplyStarts":580,"callinApplyRate":0.25,"callinJobs":6,"callinInTop5":false,"top5":[{"name":"Balhousie Care Group [23197907]","clicks":10873,"applyStarts":2694,"applyRate":0.248,"jobs":50,"isCallin":false},{"name":"My Homecare Dundee [12429984]","clicks":8941,"applyStarts":2756,"applyRate":0.308,"jobs":6,"isCallin":false},{"name":"Ann Inspired Care [2877670]","clicks":6021,"applyStarts":1009,"applyRate":0.168,"jobs":6,"isCallin":false},{"name":"Apply Gateway Ltd. for Care Concern Group [74715828]","clicks":4650,"applyStarts":1662,"applyRate":0.357,"jobs":47,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":4548,"applyStarts":732,"applyRate":0.161,"jobs":20,"isCallin":false}]},"RFW":{"county":"Renfrewshire","totalClients":54,"marketClicks":75350,"marketApplyStarts":18733,"marketJobs":167,"callinRank":5,"callinClicks":4566,"callinApplyStarts":1037,"callinApplyRate":0.227,"callinJobs":12,"callinInTop5":true,"top5":[{"name":"The Care Social Network Visiting Angels Renfrewshire and Inverclyde [77493713]","clicks":7471,"applyStarts":1380,"applyRate":0.185,"jobs":15,"isCallin":false},{"name":"Campbell Snowdon House [22773696]","clicks":6559,"applyStarts":1497,"applyRate":0.228,"jobs":3,"isCallin":false},{"name":"Care Response 24/7 [16518370]","clicks":5361,"applyStarts":1106,"applyRate":0.206,"jobs":2,"isCallin":false},{"name":"Apply Gateway Ltd. for Care Concern Group [74715828]","clicks":4971,"applyStarts":2025,"applyRate":0.407,"jobs":37,"isCallin":false},{"name":"Call-In Homecare Ltd. [1048214]","clicks":4566,"applyStarts":1037,"applyRate":0.227,"jobs":12,"isCallin":true}]},"SAY":{"county":"South Ayrshire","totalClients":46,"marketClicks":45892,"marketApplyStarts":10080,"marketJobs":163,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Sanctuary Care [71513194]","clicks":3876,"applyStarts":1213,"applyRate":0.313,"jobs":9,"isCallin":false},{"name":"Care Response 24/7 [16518370]","clicks":3312,"applyStarts":389,"applyRate":0.117,"jobs":3,"isCallin":false},{"name":"Cairllum Care Ltd [32113349]","clicks":2936,"applyStarts":477,"applyRate":0.162,"jobs":2,"isCallin":false},{"name":"Apply Gateway Ltd. for Care Concern Group [74715828]","clicks":2878,"applyStarts":1122,"applyRate":0.39,"jobs":34,"isCallin":false},{"name":"Cielo RPO UK for Priory Group [71842251]","clicks":2726,"applyStarts":507,"applyRate":0.186,"jobs":5,"isCallin":false}]},"SCB":{"county":"Scottish Borders","totalClients":28,"marketClicks":29213,"marketApplyStarts":5500,"marketJobs":92,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"MANSFIELD CARE GROUP LIMITED [43101651]","clicks":8372,"applyStarts":1750,"applyRate":0.209,"jobs":19,"isCallin":false},{"name":"Bright Care at Home Ltd [3625669]","clicks":5263,"applyStarts":758,"applyRate":0.144,"jobs":11,"isCallin":false},{"name":"Queen's House (Kelso) Ltd. [17837999]","clicks":1914,"applyStarts":387,"applyRate":0.202,"jobs":3,"isCallin":false},{"name":"Trust-Care [4877579]","clicks":1894,"applyStarts":331,"applyRate":0.175,"jobs":13,"isCallin":false},{"name":"Brothers of Charity Services (Scotland) [1861493]","clicks":1796,"applyStarts":416,"applyRate":0.232,"jobs":5,"isCallin":false}]},"SLK":{"county":"South Lanarkshire","totalClients":66,"marketClicks":117395,"marketApplyStarts":26085,"marketJobs":344,"callinRank":2,"callinClicks":11079,"callinApplyStarts":2585,"callinApplyRate":0.233,"callinJobs":33,"callinInTop5":true,"top5":[{"name":"Northcare Scotland [23424570]","clicks":13071,"applyStarts":4542,"applyRate":0.347,"jobs":4,"isCallin":false},{"name":"Call-In Homecare Ltd. [1048214]","clicks":11079,"applyStarts":2585,"applyRate":0.233,"jobs":33,"isCallin":true},{"name":"Ion Care and Support Services [8962571]","clicks":9409,"applyStarts":1336,"applyRate":0.142,"jobs":37,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":8018,"applyStarts":944,"applyRate":0.118,"jobs":45,"isCallin":false},{"name":"ENHANCE HEALTHCARE LTD [76894624]","clicks":7586,"applyStarts":2543,"applyRate":0.335,"jobs":6,"isCallin":false}]},"STG":{"county":"Stirling","totalClients":33,"marketClicks":58315,"marketApplyStarts":12861,"marketJobs":113,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Scotia Care [34950750]","clicks":8838,"applyStarts":2173,"applyRate":0.246,"jobs":32,"isCallin":false},{"name":"Visiting Angels Stirlingshire [73280893]","clicks":7728,"applyStarts":1388,"applyRate":0.18,"jobs":5,"isCallin":false},{"name":"Bright Care at Home Ltd [3625669]","clicks":6929,"applyStarts":1086,"applyRate":0.157,"jobs":9,"isCallin":false},{"name":"Northcare Scotland [23424570]","clicks":6483,"applyStarts":2202,"applyRate":0.34,"jobs":3,"isCallin":false},{"name":"Randolph Hill Nursing Home Group [9096338]","clicks":3935,"applyStarts":1298,"applyRate":0.33,"jobs":1,"isCallin":false}]},"WDU":{"county":"West Dunbartonshire","totalClients":20,"marketClicks":9443,"marketApplyStarts":2138,"marketJobs":19,"callinRank":2,"callinClicks":1819,"callinApplyStarts":353,"callinApplyRate":0.194,"callinJobs":2,"callinInTop5":true,"top5":[{"name":"HANDSALE LTD [4440911]","clicks":3010,"applyStarts":867,"applyRate":0.288,"jobs":3,"isCallin":false},{"name":"Call-In Homecare Ltd. [1048214]","clicks":1819,"applyStarts":353,"applyRate":0.194,"jobs":2,"isCallin":true},{"name":"Ben View Resource Centre [48222528]","clicks":1479,"applyStarts":200,"applyRate":0.135,"jobs":2,"isCallin":false},{"name":"M&D Green Dispensing Chemist Limited [67107852]","clicks":1212,"applyStarts":165,"applyRate":0.136,"jobs":1,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":742,"applyStarts":145,"applyRate":0.195,"jobs":3,"isCallin":false}]},"WLN":{"county":"West Lothian","totalClients":34,"marketClicks":60250,"marketApplyStarts":11161,"marketJobs":132,"callinRank":2,"callinClicks":7638,"callinApplyStarts":1304,"callinApplyRate":0.171,"callinJobs":24,"callinInTop5":true,"top5":[{"name":"Home Instead West Lothian [57337207]","clicks":11848,"applyStarts":1986,"applyRate":0.168,"jobs":4,"isCallin":false},{"name":"Call-In Homecare Ltd. [1048214]","clicks":7638,"applyStarts":1304,"applyRate":0.171,"jobs":24,"isCallin":true},{"name":"Elm Cottage [3884793]","clicks":5256,"applyStarts":837,"applyRate":0.159,"jobs":3,"isCallin":false},{"name":"Care Response 24/7 [16518370]","clicks":4264,"applyStarts":545,"applyRate":0.128,"jobs":2,"isCallin":false},{"name":"Clickwise for Cera Care [34722017]","clicks":3813,"applyStarts":684,"applyRate":0.179,"jobs":18,"isCallin":false}]},"ZET":{"county":"Shetland Islands","totalClients":1,"marketClicks":0,"marketApplyStarts":0,"marketJobs":0,"callinRank":null,"callinClicks":0,"callinApplyStarts":0,"callinApplyRate":null,"callinJobs":0,"callinInTop5":false,"top5":[{"name":"Purosearch York [5785532]","clicks":0,"applyStarts":0,"applyRate":null,"jobs":0,"isCallin":false}]}};
+
+// Click & apply-starts ranks for all 15 areas Call-In Homecare advertises in
+const RANKS = {"DND":{"clickRank":5,"asRank":3},"EDH":{"clickRank":1,"asRank":1},"EDU":{"clickRank":2,"asRank":2},"ELN":{"clickRank":1,"asRank":1},"ERW":{"clickRank":9,"asRank":9},"FAL":{"clickRank":32,"asRank":30},"GLG":{"clickRank":3,"asRank":6},"IVC":{"clickRank":1,"asRank":1},"MLN":{"clickRank":1,"asRank":1},"NLK":{"clickRank":1,"asRank":1},"PKN":{"clickRank":15,"asRank":11},"RFW":{"clickRank":5,"asRank":7},"SLK":{"clickRank":2,"asRank":2},"WDU":{"clickRank":2,"asRank":2},"WLN":{"clickRank":2,"asRank":2}};
+
+// Penetration analysis data (from Call-In Homecare Penetration Analysis.xlsx)
+const PEN = {"DND":{"penetration":0.1714,"attainment":2736,"marketJS":15962},"EDH":{"penetration":0.3334,"attainment":13172,"marketJS":39509},"EDU":{"penetration":0.4531,"attainment":3945,"marketJS":8706},"ELN":{"penetration":0.3056,"attainment":3919,"marketJS":12826},"ERW":{"penetration":0.0785,"attainment":704,"marketJS":8968},"FAL":{"penetration":0.0257,"attainment":504,"marketJS":19626},"GLG":{"penetration":0.2109,"attainment":8265,"marketJS":39197},"IVC":{"penetration":0.7098,"attainment":3908,"marketJS":5506},"MLN":{"penetration":0.3713,"attainment":3403,"marketJS":9164},"NLK":{"penetration":0.419,"attainment":6955,"marketJS":16600},"PKN":{"penetration":0.0865,"attainment":1620,"marketJS":18733},"RFW":{"penetration":0.2267,"attainment":3157,"marketJS":13928},"SLK":{"penetration":0.2486,"attainment":7246,"marketJS":29149},"WDU":{"penetration":0.2899,"attainment":1345,"marketJS":4640},"WLN":{"penetration":0.3285,"attainment":5033,"marketJS":15321}};
+
+const COMPETITORS = [
+  { name: 'Clickwise for Cera Care',     count: 7, areas: ['DND','ELN','MLN','NLK','SLK','WDU','WLN'] },
+  { name: 'Northcare Scotland',           count: 3, areas: ['EDH','GLG','SLK'] },
+  { name: 'Care Response 24/7',           count: 3, areas: ['GLG','RFW','WLN'] },
+  { name: 'Bright Care at Home Ltd',      count: 2, areas: ['DND','EDH'] },
+  { name: 'Apply Gateway / Care Concern', count: 2, areas: ['EDU','RFW'] },
+  { name: 'Talos360 / Meallmore UK',      count: 2, areas: ['GLG','IVC'] },
+];
+
+const CODES = Object.keys(DATA);
+const active_codes = CODES.filter(k => DATA[k].callinInTop5);
+const pen_codes    = Object.keys(PEN);
+let selectedCode = 'EDH';
+let areaChart = null;
+let penChart  = null;
+let momSupplyChart = null;
+let momCostChart   = null;
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const AGENCY_PREFIXES = /^(Clickwise|Apply Gateway Ltd\.|Talos360 limited|Oliver Raine|AudienceLink|Cielo RPO UK|The Care Social Network)\s+[Ff]or\s+/;
+const sn = name => name.replace(/\s*\[\d+\]/g, '').replace(AGENCY_PREFIXES, '').trim();
+const n   = (v, d=0) => v == null ? '—' : Number(v).toLocaleString('en-GB',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = v => v == null ? '—' : (v*100).toFixed(1)+'%';
+const shr = (p,t) => !t ? '—' : Math.round(p/t*100)+'%';
+const rateTag = v => {
+  if (v == null) return '—';
+  const s = (v*100).toFixed(1)+'%';
+  if (v >= 0.3)  return `<span class="tag-green">${s}</span>`;
+  if (v >= 0.15) return `<span class="tag-amber">${s}</span>`;
+  return `<span class="tag-red">${s}</span>`;
+};
+const penTag = v => {
+  if (v == null) return '—';
+  const s = (v*100).toFixed(1)+'%';
+  if (v >= 0.4)  return `<span class="tag-green">${s}</span>`;
+  if (v >= 0.2)  return `<span class="tag-amber">${s}</span>`;
+  return `<span class="tag-red">${s}</span>`;
+};
+const rankBadge = r => {
+  if (!r) return '<span class="badge badge-none">—</span>';
+  if (r===1) return '<span class="badge badge-1">#1</span>';
+  if (r===2) return '<span class="badge badge-2">#2</span>';
+  if (r===3) return '<span class="badge badge-3">#3</span>';
+  if (r<=5)  return `<span class="badge badge-5">#${r}</span>`;
+  if (r<=10) return `<span class="badge badge-none" style="background:#fff7ed;color:#c2410c;border-color:#fdba74">#${r}</span>`;
+  return `<span class="badge badge-none" style="background:#fef2f2;color:#991b1b;border-color:#fca5a5">#${r}</span>`;
+};
+const gapBar = (callin, leader, mkt) => {
+  if (!leader || leader === callin) return '<span style="color:var(--text-3);font-size:11px">Market leader</span>';
+  const gap = leader - callin;
+  const w = Math.min(Math.round(callin/leader*100), 100);
+  return `<div class="gap-bar-wrap">
+    <div class="gap-bar"><div class="gap-bar-fill" style="width:${w}%"></div></div>
+    <span style="font-size:11px;color:var(--text-2);white-space:nowrap">-${n(gap)} vs #1</span>
+  </div>`;
+};
+
+// ── Tier helper ──────────────────────────────────────────────────────────────
+function getTier(code) {
+  const cr  = (RANKS[code] || {}).clickRank;
+  const pen = ((PEN[code] || {}).penetration) || 0;
+  if (cr === 1 && pen >= 0.40) return { label: 'Dominant',    cls: 'tier-dominant' };
+  if (cr <= 2  && pen >= 0.20) return { label: 'Leading',     cls: 'tier-leading' };
+  if (cr <= 5  || pen >= 0.15) return { label: 'Competitive', cls: 'tier-competitive' };
+  return                               { label: 'Building',    cls: 'tier-building' };
+}
+function tierBadge(code) {
+  const t = getTier(code);
+  return `<span class="tier ${t.cls}">${t.label}</span>`;
+}
+
+// ── Insight cards ─────────────────────────────────────────────────────────────
+function renderInsights() {
+  const dominantAreas = pen_codes.filter(k => getTier(k).label === 'Dominant');
+  const leadingAreas  = pen_codes.filter(k => getTier(k).label === 'Leading');
+
+  // Biggest absolute attainment area
+  const topAbsArea = [...pen_codes].sort((a,b) => PEN[b].attainment - PEN[a].attainment)[0];
+  const topAbs = PEN[topAbsArea];
+
+  // Glasgow gap (click rank vs AS rank)
+  const glgGap = (RANKS['GLG'] || {});
+
+  // Biggest untapped market (not in pen_codes, highest marketClicks)
+  const untapped = Object.keys(DATA)
+    .filter(k => !pen_codes.includes(k) && DATA[k].marketClicks > 0)
+    .sort((a,b) => DATA[b].marketClicks - DATA[a].marketClicks)[0];
+
+  const totAttain  = pen_codes.reduce((s,k) => s + PEN[k].attainment, 0);
+  const totMktJS   = pen_codes.reduce((s,k) => s + PEN[k].marketJS, 0);
+  const overallPen = (totAttain / totMktJS * 100).toFixed(0);
+
+  const insights = [
+    {
+      cls: 'positive',
+      icon: '🏆',
+      head: `Dominant or Leading in ${dominantAreas.length + leadingAreas.length} of ${pen_codes.length} markets`,
+      body: `You hold <strong>#1 rank</strong> in 5 Scottish council areas and sit in the top 3 in 8. That's a strong regional platform to build from.`
+    },
+    {
+      cls: '',
+      icon: '👥',
+      head: `${overallPen}% of available candidates reached`,
+      body: `Across your 15 active markets you're connecting with <strong>${n(totAttain)} jobseekers</strong> out of ${n(totMktJS)} available — meaning <strong>${100 - parseInt(overallPen)}% are still untouched</strong>.`
+    },
+    {
+      cls: 'warning',
+      icon: '📍',
+      head: `${DATA[topAbsArea]?.county}: your highest-volume candidate market`,
+      body: `<strong>${n(topAbs.attainment)} candidates reached</strong> here — but penetration is ${(topAbs.penetration*100).toFixed(0)}%. The largest share of your growth opportunity sits in this single area.`
+    },
+    {
+      cls: 'alert',
+      icon: '⚡',
+      head: `Glasgow: click rank #${glgGap.clickRank} but apply-starts rank #${glgGap.asRank}`,
+      body: `You're driving traffic in Glasgow's huge market but <strong>converting at a lower rate than your click position suggests</strong>. Worth exploring ad quality and job content here.`
+    }
+  ];
+
+  document.getElementById('insight-grid').innerHTML = insights.map(ins => `
+    <div class="insight-card ${ins.cls}">
+      <div class="insight-icon">${ins.icon}</div>
+      <div class="insight-head">${ins.head}</div>
+      <div class="insight-body">${ins.body}</div>
+    </div>
+  `).join('');
+}
+
+// ── KPI strip ────────────────────────────────────────────────────────────────
+function renderKPIs() {
+  const top5areas   = active_codes.length;
+  const rank1       = active_codes.filter(k => DATA[k].callinRank === 1).length;
+  const totClicks   = active_codes.reduce((s,k) => s + DATA[k].callinClicks, 0);
+  const totAS       = active_codes.reduce((s,k) => s + DATA[k].callinApplyStarts, 0);
+  const overallRate = totAS / totClicks;
+  const totAttain   = pen_codes.reduce((s,k) => s + PEN[k].attainment, 0);
+  const totMktJS    = pen_codes.reduce((s,k) => s + PEN[k].marketJS, 0);
+  const overallPen  = totAttain / totMktJS;
+
+  document.getElementById('kpi-strip').innerHTML = [
+    { cls:'accent', v: pen_codes.length,                   label:`Areas advertised in (${top5areas} in top 5)` },
+    { cls:'green',  v: rank1,                              label:'Areas ranked #1' },
+    { cls:'',       v: n(totClicks),                       label:'Total clicks (top-5 areas)' },
+    { cls:'',       v: n(totAS),                           label:'Total apply starts' },
+    { cls:'amber',  v: (overallRate*100).toFixed(1)+'%',   label:'Overall apply rate' },
+    { cls:'accent', v: (overallPen*100).toFixed(1)+'%',    label:'Overall JS penetration (15 areas)' },
+  ].map(k => `<div class="kpi ${k.cls}"><div class="kpi-value">${k.v}</div><div class="kpi-label">${k.label}</div></div>`).join('');
+}
+
+// ── Footprint table ──────────────────────────────────────────────────────────
+function renderFootprint() {
+  const rows = pen_codes
+    .sort((a,b) => DATA[b].callinClicks - DATA[a].callinClicks)
+    .map(code => {
+      const d = DATA[code];
+      const p = PEN[code] || null;
+      const leader = d.top5[0];
+      const leaderClicks = leader ? leader.clicks : 0;
+      const r = RANKS[code] || {};
+      return `<tr onclick="selectArea('${code}')" style="cursor:pointer">
+        <td class="name">${d.county}</td>
+        <td class="c">${tierBadge(code)}</td>
+        <td class="c">${rankBadge(r.clickRank)}</td>
+        <td class="c">${rankBadge(r.asRank)}</td>
+        <td class="r">${shr(d.callinClicks, d.marketClicks)}</td>
+        <td class="r">${n(d.callinApplyStarts)}</td>
+        <td class="r">${rateTag(d.callinApplyRate)}</td>
+        <td class="r">${p ? penTag(p.penetration) : '—'}</td>
+        <td>${gapBar(d.callinClicks, leaderClicks, d.marketClicks)}</td>
+      </tr>`;
+    }).join('');
+  document.getElementById('footprint-tbody').innerHTML = rows;
+}
+
+// ── Penetration overview ─────────────────────────────────────────────────────
+function renderPenetration() {
+  // Chart — sorted by penetration desc
+  const sorted = [...pen_codes].sort((a,b) => PEN[b].penetration - PEN[a].penetration);
+  const labels  = sorted.map(k => DATA[k]?.county || k);
+  const values  = sorted.map(k => +(PEN[k].penetration * 100).toFixed(1));
+  const colors  = values.map(v => v >= 40 ? '#16a34a' : v >= 20 ? '#b45309' : '#dc2626');
+
+  if (penChart) { penChart.destroy(); penChart = null; }
+  penChart = new Chart(document.getElementById('chart-penetration').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: values, backgroundColor: colors, borderRadius: 3 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ` ${c.parsed.x.toFixed(1)}% JS penetration` } }
+      },
+      scales: {
+        x: { grid: { color: '#e8eef8' }, max: 80,
+          ticks: { font:{size:11}, color:'#6b7280', callback: v => v+'%' } },
+        y: { grid: { display: false },
+          ticks: { font:{size:11}, color:'#374151' } }
+      }
+    }
+  });
+
+  // Table — sorted same way
+  document.getElementById('penetration-tbody').innerHTML = sorted.map((code, i) => {
+    const p = PEN[code];
+    const d = DATA[code];
+    const rk = RANKS[code] || {};
+    return `<tr onclick="${d?.callinInTop5 ? `selectArea('${code}')` : ''}" style="${d?.callinInTop5 ? 'cursor:pointer' : ''}">
+      <td class="name">${d?.county || code}${!d?.callinInTop5 ? ' <span style="font-size:10px;background:#fef7e0;color:#e37400;padding:1px 5px;border-radius:3px">not top 5</span>' : ''}</td>
+      <td class="c">${rankBadge(rk.clickRank)}</td>
+      <td class="c">${rankBadge(rk.asRank)}</td>
+      <td class="r">${n(p.attainment)}</td>
+      <td class="r muted">${n(p.marketJS)}</td>
+      <td class="r">${penTag(p.penetration)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Area pills ───────────────────────────────────────────────────────────────
+function renderPills() {
+  document.getElementById('area-pills').innerHTML = active_codes.map(code =>
+    `<button class="pill${code===selectedCode?' active':''}" onclick="selectArea('${code}')">${DATA[code].county}</button>`
+  ).join('');
+}
+
+// ── Area drilldown ───────────────────────────────────────────────────────────
+function selectArea(code) {
+  selectedCode = code;
+  document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.textContent === DATA[code].county));
+  renderDrilldown();
+  // scroll into view
+  document.getElementById('area-title').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderDrilldown() {
+  const d = DATA[selectedCode];
+  const p = PEN[selectedCode] || null;
+  document.getElementById('area-title').textContent = d.county;
+  document.getElementById('area-tier-badge').innerHTML = tierBadge(selectedCode);
+  const r = RANKS[selectedCode] || {};
+  document.getElementById('area-sub').textContent =
+    `${d.totalClients} advertisers in market · Click rank #${r.clickRank ?? '—'} · AS rank #${r.asRank ?? '—'} · ${shr(d.callinClicks, d.marketClicks)} click share · ${shr(d.callinApplyStarts, d.marketApplyStarts)} AS share`;
+  document.getElementById('chart-area-sub').textContent = `Click share % by advertiser · ${d.county}`;
+
+  // Penetration mini-stats — show % only, no raw competitor numbers
+  document.getElementById('area-pen-stats').innerHTML = p ? [
+    { v: shr(d.callinClicks, d.marketClicks),         l: 'Our click share' },
+    { v: shr(d.callinApplyStarts, d.marketApplyStarts), l: 'Our AS share' },
+    { v: penTag(p.penetration),                        l: 'Candidate penetration' },
+  ].map(s => `<div class="stat-card" style="padding:12px 14px">
+      <div class="stat-value" style="font-size:16px">${s.v}</div>
+      <div class="stat-label">${s.l}</div>
+    </div>`).join('') : '';
+
+  // Percentages of market totals — no raw numbers shown for competitors
+  document.getElementById('drilldown-tbody').innerHTML = d.top5.map((c,i) => {
+    const clickPct = d.marketClicks   ? (c.clicks / d.marketClicks * 100).toFixed(1) + '%' : '—';
+    const asPct    = d.marketApplyStarts ? (c.applyStarts / d.marketApplyStarts * 100).toFixed(1) + '%' : '—';
+    return `<tr class="${c.isCallin ? 'callin-row' : ''}">
+      <td class="c">${rankBadge(i+1)}</td>
+      <td>${sn(c.name)}${c.isCallin ? ' <span style="font-size:10px;background:#1a73e8;color:#fff;padding:1px 5px;border-radius:3px;vertical-align:middle">US</span>' : ''}</td>
+      <td class="r">${clickPct}</td>
+      <td class="r">${asPct}</td>
+      <td class="r">${rateTag(c.applyRate)}</td>
+    </tr>`;
+  }).join('');
+
+  // Chart uses click share % — no raw click counts
+  const names      = d.top5.map(c => sn(c.name));
+  const clickPcts  = d.top5.map(c => d.marketClicks ? +(c.clicks / d.marketClicks * 100).toFixed(1) : 0);
+  const colors     = d.top5.map(c => c.isCallin ? '#1a73e8' : '#bfcfe9');
+
+  if (areaChart) { areaChart.destroy(); areaChart = null; }
+  areaChart = new Chart(document.getElementById('chart-area').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{ data: clickPcts, backgroundColor: colors, borderRadius: 3 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: c => ` ${c.parsed.x.toFixed(1)}% of market clicks` }
+      }},
+      scales: {
+        x: { grid: { color: '#e8f0fd' }, ticks: { font:{size:11}, color:'#5f6368',
+          callback: v => v + '%' }},
+        y: { grid: { display: false }, ticks: { font:{size:11}, color:'#202124',
+          callback: function(val) { const l = this.getLabelForValue(val); return l.length > 22 ? l.slice(0,22)+'…' : l; }}}
+      }
+    }
+  });
+}
+
+// ── Competitors ──────────────────────────────────────────────────────────────
+function renderCompetitors() {
+  document.getElementById('comp-grid').innerHTML = COMPETITORS.map(c => `
+    <div class="comp-card">
+      <div class="comp-card-name">${sn(c.name)}</div>
+      <div class="comp-card-count">${c.count}</div>
+      <div class="comp-card-label">shared area${c.count > 1 ? 's' : ''} with Call-In Homecare</div>
+      <div class="comp-card-areas">${c.areas.map(k => DATA[k]?.county || k).join(' · ')}</div>
+    </div>
+  `).join('');
+}
+
+// ── Opportunity areas ────────────────────────────────────────────────────────
+function renderOpportunities() {
+  // Areas not in click top 5 — but split into "active with pen data" vs "no presence"
+  const opp = CODES
+    .filter(k => !DATA[k].callinInTop5 && DATA[k].marketClicks > 0)
+    .sort((a,b) => DATA[b].marketClicks - DATA[a].marketClicks);
+
+  document.getElementById('opp-tbody').innerHTML = opp.map(code => {
+    const d = DATA[code];
+    const p = PEN[code] || null;
+    const leader = d.top5[0];
+    const hasActive = p !== null;
+    return `<tr>
+      <td class="name">${d.county}</td>
+      <td class="c">${hasActive
+        ? rankBadge(d.callinRank)
+        : '<span class="badge badge-none">No presence</span>'}</td>
+      <td class="r">${n(d.marketClicks)}</td>
+      <td class="r muted">${p ? n(p.marketJS) : '—'}</td>
+      <td class="r">${p ? n(p.attainment) : '—'}</td>
+      <td class="r">${p ? penTag(p.penetration) : '—'}</td>
+      <td>${leader ? sn(leader.name) : '—'}</td>
+      <td class="r">${leader ? rateTag(leader.applyRate) : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Keyword data ─────────────────────────────────────────────────────────────
+const KW = {"care":{"rows":[{"kw":"Blank","clientClicks":10613,"marketClicks":5311515,"clientPct":28.3,"marketPct":32.4,"index":87},{"kw":"part time","clientClicks":7020,"marketClicks":2317356,"clientPct":18.7,"marketPct":14.1,"index":133},{"kw":"care assistant","clientClicks":5616,"marketClicks":2377261,"clientPct":15.0,"marketPct":14.5,"index":103},{"kw":"warehouse","clientClicks":1974,"marketClicks":0,"clientPct":5.3,"marketPct":0.0,"index":null},{"kw":"support worker","clientClicks":1848,"marketClicks":2497845,"clientPct":4.9,"marketPct":15.2,"index":32},{"kw":"full time","clientClicks":1312,"marketClicks":723754,"clientPct":3.5,"marketPct":4.4,"index":80},{"kw":"nhs","clientClicks":1077,"marketClicks":84264,"clientPct":2.9,"marketPct":0.5,"index":580},{"kw":"healthcare assistant","clientClicks":875,"marketClicks":607447,"clientPct":2.3,"marketPct":3.7,"index":62},{"kw":"no experience","clientClicks":810,"marketClicks":128352,"clientPct":2.2,"marketPct":0.8,"index":275},{"kw":"care sponsorship","clientClicks":590,"marketClicks":0,"clientPct":1.6,"marketPct":0.0,"index":null},{"kw":"call in homecare","clientClicks":527,"marketClicks":0,"clientPct":1.4,"marketPct":0.0,"index":null},{"kw":"nhs vacancies","clientClicks":506,"marketClicks":0,"clientPct":1.3,"marketPct":0.0,"index":null},{"kw":"support worker no experience","clientClicks":502,"marketClicks":97991,"clientPct":1.3,"marketPct":0.6,"index":217},{"kw":"customer service","clientClicks":481,"marketClicks":0,"clientPct":1.3,"marketPct":0.0,"index":null},{"kw":"care","clientClicks":460,"marketClicks":238699,"clientPct":1.2,"marketPct":1.5,"index":80},{"kw":"night shift","clientClicks":323,"marketClicks":259064,"clientPct":0.9,"marketPct":1.6,"index":56},{"kw":"no experience necessary","clientClicks":303,"marketClicks":0,"clientPct":0.8,"marketPct":0.0,"index":null},{"kw":"driver","clientClicks":285,"marketClicks":0,"clientPct":0.8,"marketPct":0.0,"index":null},{"kw":"nhs healthcare assistant","clientClicks":249,"marketClicks":0,"clientPct":0.7,"marketPct":0.0,"index":null},{"kw":"domestic assistant","clientClicks":228,"marketClicks":0,"clientPct":0.6,"marketPct":0.0,"index":null},{"kw":"entry level","clientClicks":215,"marketClicks":0,"clientPct":0.6,"marketPct":0.0,"index":null},{"kw":"home care","clientClicks":215,"marketClicks":0,"clientPct":0.6,"marketPct":0.0,"index":null},{"kw":"care assistant no experience required","clientClicks":213,"marketClicks":0,"clientPct":0.6,"marketPct":0.0,"index":null},{"kw":"no experience required","clientClicks":209,"marketClicks":0,"clientPct":0.6,"marketPct":0.0,"index":null},{"kw":"delivery driver","clientClicks":197,"marketClicks":0,"clientPct":0.5,"marketPct":0.0,"index":null},{"kw":"carer","clientClicks":193,"marketClicks":93429,"clientPct":0.5,"marketPct":0.6,"index":83},{"kw":"care worker","clientClicks":183,"marketClicks":124053,"clientPct":0.5,"marketPct":0.8,"index":62},{"kw":"healthcare","clientClicks":180,"marketClicks":149742,"clientPct":0.5,"marketPct":0.9,"index":56},{"kw":"weekly pay","clientClicks":167,"marketClicks":0,"clientPct":0.4,"marketPct":0.0,"index":null},{"kw":"sponsorship","clientClicks":162,"marketClicks":103676,"clientPct":0.4,"marketPct":0.6,"index":67},{"kw":"care home","clientClicks":0,"marketClicks":273904,"clientPct":0.0,"marketPct":1.7,"index":0},{"kw":"support worker sponsorship","clientClicks":0,"marketClicks":113207,"clientPct":0.0,"marketPct":0.7,"index":0},{"kw":"mental health","clientClicks":0,"marketClicks":108872,"clientPct":0.0,"marketPct":0.7,"index":0},{"kw":"live in carer","clientClicks":0,"marketClicks":91046,"clientPct":0.0,"marketPct":0.6,"index":0},{"kw":"senior care assistant","clientClicks":0,"marketClicks":82693,"clientPct":0.0,"marketPct":0.5,"index":0},{"kw":"mental health support worker","clientClicks":0,"marketClicks":82583,"clientPct":0.0,"marketPct":0.5,"index":0},{"kw":"sponsorship visa","clientClicks":0,"marketClicks":82582,"clientPct":0.0,"marketPct":0.5,"index":0},{"kw":"care homes tier 2 visa sponsorship","clientClicks":0,"marketClicks":69814,"clientPct":0.0,"marketPct":0.4,"index":0},{"kw":"home care with visa sponsorship","clientClicks":0,"marketClicks":64017,"clientPct":0.0,"marketPct":0.4,"index":0},{"kw":"visa sponsorship care work","clientClicks":0,"marketClicks":55141,"clientPct":0.0,"marketPct":0.3,"index":0},{"kw":"caregiver","clientClicks":0,"marketClicks":52971,"clientPct":0.0,"marketPct":0.3,"index":0},{"kw":"weekend","clientClicks":0,"marketClicks":52902,"clientPct":0.0,"marketPct":0.3,"index":0},{"kw":"residential support worker","clientClicks":0,"marketClicks":50706,"clientPct":0.0,"marketPct":0.3,"index":0},{"kw":"children support worker","clientClicks":0,"marketClicks":50121,"clientPct":0.0,"marketPct":0.3,"index":0},{"kw":"all vacancies","clientClicks":0,"marketClicks":50120,"clientPct":0.0,"marketPct":0.3,"index":0}],"clientTotal":37533,"marketTotal":16395127}};
+
+// ── Keyword rendering ─────────────────────────────────────────────────────────
+function indexBadge(idx) {
+  if (idx === null) return `<span class="badge badge-1" style="font-size:10px">Client only</span>`;
+  if (idx === 0)    return `<span class="badge badge-none" style="font-size:10px">Market only</span>`;
+  if (idx >= 100)   return `<span class="badge badge-1" style="font-size:10px">${idx}</span>`;
+  if (idx >= 50)    return `<span class="badge badge-3" style="font-size:10px">${idx}</span>`;
+  return `<span class="badge badge-none" style="background:#fee2e2;color:#991b1b;border-color:#fca5a5;font-size:10px">${idx}</span>`;
+}
+
+let kwCharts = {};
+
+function kwTileHtml(r) {
+  let idxClass = 'kw-idx-none';
+  let idxLabel = 'Client only';
+  if (r.index !== null && r.marketClicks > 0) {
+    idxLabel = String(r.index);
+    idxClass = r.index >= 110 ? 'kw-idx-strength' : r.index >= 80 ? 'kw-idx-par' : 'kw-idx-gap';
+  } else if (r.clientClicks === 0) {
+    idxLabel = '0';
+    idxClass = 'kw-idx-gap';
+  }
+  const pctText = r.clientPct
+    ? `You ${r.clientPct}% · Mkt ${r.marketPct || 0}%`
+    : `Mkt ${r.marketPct}% — not reaching you`;
+  return `<div class="kw-tile">
+    <span class="kw-tile-label">${r.kw}</span>
+    <span class="kw-tile-pcts">${pctText}</span>
+    <span class="kw-tile-idx ${idxClass}">${idxLabel}</span>
+  </div>`;
+}
+
+function renderKeywords(cat, chartId) {
+  const d = KW[cat];
+
+  // Pull out Blank row for special treatment — exclude from signal columns
+  const blankRow = d.rows.find(r => r.kw === 'Blank');
+  const namedRows = d.rows.filter(r => r.kw !== 'Blank');
+
+  // Render blank search callout
+  const blankEl = document.getElementById(`kw-blank-${cat}`);
+  if (blankEl && blankRow) {
+    blankEl.innerHTML = `
+      <div class="kw-blank-card">
+        <div class="kw-blank-icon">🔍</div>
+        <div class="kw-blank-body">
+          <div class="kw-blank-title">Blank search — #1 traffic source</div>
+          <div class="kw-blank-desc">Candidates who clicked "Find jobs" without typing a keyword — browsing available roles rather than searching. This represents the largest single traffic driver for both Call-In Homecare and the market.</div>
+          <div class="kw-blank-stats">
+            <span><strong>Call-In Homecare:</strong> ${blankRow.clientPct}% of clicks</span>
+            <span><strong>Market:</strong> ${blankRow.marketPct}% of clicks</span>
+            <span class="kw-tile-idx kw-idx-par">Index ${blankRow.index} — On par</span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // Buckets (named keywords only)
+  const strengths = namedRows.filter(r => r.index !== null && r.index >= 110 && r.marketClicks > 0);
+  const par       = namedRows.filter(r => r.index !== null && r.index >= 80 && r.index < 110 && r.marketClicks > 0);
+  // Gaps = market has volume but Call-In Homecare under-indexes; limit to meaningful ones
+  const gaps = namedRows.filter(r => {
+    if (r.clientClicks === 0 && r.marketClicks > 0) return true;
+    if (r.index !== null && r.index < 80 && r.marketPct > 0) return true;
+    return false;
+  }).sort((a, b) => (b.marketPct || 0) - (a.marketPct || 0)).slice(0, 8);
+
+  document.getElementById(`kw-tiles-${cat}-strength`).innerHTML =
+    strengths.length ? strengths.map(kwTileHtml).join('') : '<div style="font-size:11px;color:var(--text-2);padding:8px">None identified</div>';
+  document.getElementById(`kw-tiles-${cat}-par`).innerHTML =
+    par.length ? par.map(kwTileHtml).join('') : '<div style="font-size:11px;color:var(--text-2);padding:8px">None identified</div>';
+  document.getElementById(`kw-tiles-${cat}-gap`).innerHTML =
+    gaps.length ? gaps.map(kwTileHtml).join('') : '<div style="font-size:11px;color:var(--text-2);padding:8px">None identified</div>';
+
+  // Chart: named keywords only (exclude Blank), market-comparable rows, sorted by index desc, top 10
+  const chartRows = namedRows
+    .filter(r => r.marketClicks > 0 || r.clientClicks > 0)
+    .map(r => ({ ...r, indexVal: r.index !== null ? r.index : (r.clientClicks > 0 ? 999 : 0) }))
+    .sort((a, b) => b.indexVal - a.indexVal)
+    .slice(0, 10);
+
+  const colors = chartRows.map(r => {
+    if (r.index === null && r.clientClicks > 0) return 'rgba(234,179,8,0.7)';
+    if (!r.index || r.index < 80) return 'rgba(220,38,38,0.65)';
+    if (r.index >= 110) return 'rgba(22,163,74,0.7)';
+    return 'rgba(107,114,128,0.5)';
+  });
+
+  // Full keyword list table — all rows where Call-In Homecare has clicks (Blank first, then sorted by %)
+  const fullRows = d.rows
+    .filter(r => r.clientClicks > 0)
+    .sort((a, b) => {
+      if (a.kw === 'Blank') return -1;
+      if (b.kw === 'Blank') return 1;
+      return b.clientPct - a.clientPct;
+    });
+
+  document.getElementById(`kw-full-${cat}-tbody`).innerHTML = fullRows.map(r => {
+    const isBlank = r.kw === 'Blank';
+    let signal, signalClass;
+    if (isBlank) {
+      signal = 'Browse'; signalClass = 'kw-idx-par';
+    } else if (r.index === null || r.marketClicks === 0) {
+      signal = 'Client only'; signalClass = 'kw-idx-none';
+    } else if (r.index >= 110) {
+      signal = 'Strength'; signalClass = 'kw-idx-strength';
+    } else if (r.index >= 80) {
+      signal = 'On par'; signalClass = 'kw-idx-par';
+    } else {
+      signal = 'Gap'; signalClass = 'kw-idx-gap';
+    }
+    return `<tr${isBlank ? ' style="background:#f0f4ff;font-weight:600"' : ''}>
+      <td class="name">${isBlank ? '🔍 Blank / direct browse' : r.kw}</td>
+      <td class="r">${r.clientPct}%</td>
+      <td class="r muted">${r.marketPct ? r.marketPct + '%' : '—'}</td>
+      <td class="c">${r.index !== null && r.marketClicks > 0 ? `<span class="kw-tile-idx ${signalClass}">${r.index}</span>` : '<span class="muted">—</span>'}</td>
+      <td class="c"><span class="kw-tile-idx ${signalClass}" style="font-size:10px">${signal}</span></td>
+    </tr>`;
+  }).join('');
+
+  if (kwCharts[cat]) kwCharts[cat].destroy();
+  kwCharts[cat] = new Chart(document.getElementById(chartId).getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: chartRows.map(r => r.kw),
+      datasets: [{
+        label: 'Index score',
+        data: chartRows.map(r => r.index !== null ? r.index : null),
+        backgroundColor: colors,
+        borderRadius: 4,
+      }, {
+        label: 'Baseline (100)',
+        data: chartRows.map(() => 100),
+        type: 'line',
+        borderColor: 'rgba(26,115,232,0.5)',
+        borderWidth: 1.5,
+        borderDash: [4,4],
+        pointRadius: 0,
+        fill: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => c.datasetIndex === 0
+              ? ` Index: ${c.parsed.x !== null ? c.parsed.x : 'client-only'}`
+              : null
+          },
+          filter: i => i.datasetIndex === 0,
+        }
+      },
+      scales: {
+        x: {
+          min: 0, max: 280,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { font: { size: 10 }, callback: v => v === 100 ? '100 ✓' : v }
+        },
+        y: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#374151' } }
+      }
+    }
+  });
+}
+
+function switchKwTab(cat, btn) {
+  document.querySelectorAll('.kw-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['care', 'care-list'].forEach(id => {
+    document.getElementById('kw-panel-' + id).style.display = cat === id ? '' : 'none';
+  });
+}
+
+const MOM = [{"month":"2024-01","inv_per_job":27.25,"clicks":920152,"clicks_per_job":159.75,"cpc":0.17,"cpas":0.95,"js_traffic":255219,"js_per_job":44.31,"jobs":5763,"companies":938},{"month":"2024-02","inv_per_job":28.13,"clicks":756074,"clicks_per_job":140.93,"cpc":0.2,"cpas":1.06,"js_traffic":219125,"js_per_job":40.84,"jobs":5370,"companies":906},{"month":"2024-03","inv_per_job":29.0,"clicks":787844,"clicks_per_job":146.25,"cpc":0.2,"cpas":1.14,"js_traffic":226353,"js_per_job":42.02,"jobs":5388,"companies":909},{"month":"2024-04","inv_per_job":29.92,"clicks":769842,"clicks_per_job":142.04,"cpc":0.21,"cpas":1.08,"js_traffic":221988,"js_per_job":40.96,"jobs":5427,"companies":936},{"month":"2024-05","inv_per_job":31.1,"clicks":715861,"clicks_per_job":151.28,"cpc":0.21,"cpas":1.11,"js_traffic":211828,"js_per_job":44.77,"jobs":4738,"companies":900},{"month":"2024-06","inv_per_job":36.31,"clicks":640147,"clicks_per_job":148.98,"cpc":0.24,"cpas":1.26,"js_traffic":187821,"js_per_job":43.71,"jobs":4302,"companies":818},{"month":"2024-07","inv_per_job":33.61,"clicks":699911,"clicks_per_job":143.78,"cpc":0.23,"cpas":1.23,"js_traffic":197930,"js_per_job":40.66,"jobs":4872,"companies":875},{"month":"2024-08","inv_per_job":32.6,"clicks":703997,"clicks_per_job":139.9,"cpc":0.23,"cpas":1.42,"js_traffic":205449,"js_per_job":40.83,"jobs":5032,"companies":855},{"month":"2024-09","inv_per_job":36.17,"clicks":665831,"clicks_per_job":140.38,"cpc":0.26,"cpas":1.35,"js_traffic":190728,"js_per_job":40.21,"jobs":4745,"companies":873},{"month":"2024-10","inv_per_job":37.04,"clicks":681067,"clicks_per_job":138.4,"cpc":0.27,"cpas":1.23,"js_traffic":189849,"js_per_job":38.58,"jobs":5022,"companies":919},{"month":"2024-11","inv_per_job":37.02,"clicks":624005,"clicks_per_job":132.34,"cpc":0.28,"cpas":1.19,"js_traffic":174275,"js_per_job":36.96,"jobs":4883,"companies":896},{"month":"2024-12","inv_per_job":34.97,"clicks":507208,"clicks_per_job":126.17,"cpc":0.28,"cpas":1.11,"js_traffic":141080,"js_per_job":35.09,"jobs":4060,"companies":816},{"month":"2025-01","inv_per_job":35.92,"clicks":788710,"clicks_per_job":165.52,"cpc":0.22,"cpas":0.88,"js_traffic":200293,"js_per_job":42.03,"jobs":4776,"companies":852},{"month":"2025-02","inv_per_job":34.28,"clicks":657942,"clicks_per_job":148.79,"cpc":0.23,"cpas":0.97,"js_traffic":166448,"js_per_job":37.64,"jobs":4439,"companies":891},{"month":"2025-03","inv_per_job":34.78,"clicks":721132,"clicks_per_job":158.39,"cpc":0.22,"cpas":0.94,"js_traffic":180239,"js_per_job":39.59,"jobs":4567,"companies":864},{"month":"2025-04","inv_per_job":36.41,"clicks":647727,"clicks_per_job":150.74,"cpc":0.24,"cpas":0.98,"js_traffic":165835,"js_per_job":38.59,"jobs":4313,"companies":790},{"month":"2025-05","inv_per_job":37.69,"clicks":657100,"clicks_per_job":154.94,"cpc":0.24,"cpas":1.01,"js_traffic":169067,"js_per_job":39.86,"jobs":4272,"companies":800},{"month":"2025-06","inv_per_job":41.62,"clicks":630083,"clicks_per_job":158.47,"cpc":0.26,"cpas":1.17,"js_traffic":165122,"js_per_job":41.53,"jobs":4022,"companies":853},{"month":"2025-07","inv_per_job":43.04,"clicks":643939,"clicks_per_job":151.44,"cpc":0.28,"cpas":1.31,"js_traffic":166853,"js_per_job":39.24,"jobs":4302,"companies":888},{"month":"2025-08","inv_per_job":42.93,"clicks":621013,"clicks_per_job":142.53,"cpc":0.3,"cpas":1.47,"js_traffic":161313,"js_per_job":37.02,"jobs":4391,"companies":880},{"month":"2025-09","inv_per_job":43.04,"clicks":591729,"clicks_per_job":133.18,"cpc":0.32,"cpas":1.46,"js_traffic":152619,"js_per_job":34.35,"jobs":4477,"companies":881},{"month":"2025-10","inv_per_job":42.79,"clicks":652159,"clicks_per_job":149.06,"cpc":0.29,"cpas":1.25,"js_traffic":165077,"js_per_job":37.73,"jobs":4411,"companies":880},{"month":"2025-11","inv_per_job":48.95,"clicks":601688,"clicks_per_job":148.49,"cpc":0.33,"cpas":1.52,"js_traffic":155589,"js_per_job":38.4,"jobs":4093,"companies":831},{"month":"2025-12","inv_per_job":45.32,"clicks":492230,"clicks_per_job":133.76,"cpc":0.34,"cpas":1.54,"js_traffic":132061,"js_per_job":35.89,"jobs":3714,"companies":746},{"month":"2026-01","inv_per_job":52.41,"clicks":747245,"clicks_per_job":176.11,"cpc":0.3,"cpas":1.4,"js_traffic":186103,"js_per_job":43.86,"jobs":4269,"companies":827},{"month":"2026-02","inv_per_job":49.06,"clicks":677403,"clicks_per_job":165.06,"cpc":0.3,"cpas":1.35,"js_traffic":167106,"js_per_job":40.72,"jobs":4145,"companies":824},{"month":"2026-03","inv_per_job":52.41,"clicks":679867,"clicks_per_job":165.26,"cpc":0.32,"cpas":1.53,"js_traffic":177900,"js_per_job":43.24,"jobs":4161,"companies":824},{"month":"2026-04","inv_per_job":50.21,"clicks":642661,"clicks_per_job":159.87,"cpc":0.31,"cpas":1.44,"js_traffic":165292,"js_per_job":41.12,"jobs":4090,"companies":800}];
+
+function renderMOM() {
+  const labels = MOM.map(d => {
+    const [y, m] = d.month.split('-');
+    return new Date(+y, +m - 1).toLocaleString('en-GB', { month: 'short', year: '2-digit' });
+  });
+
+  const first = MOM[0], last = MOM[MOM.length - 1];
+  const jsPct  = Math.round((last.js_traffic - first.js_traffic) / first.js_traffic * 100);
+  const jobPct = Math.round((last.jobs - first.jobs) / first.jobs * 100);
+  const invPct = Math.round((last.inv_per_job - first.inv_per_job) / first.inv_per_job * 100);
+  const cpcPct = Math.round((last.cpc - first.cpc) / first.cpc * 100);
+  const cpasPct= Math.round((last.cpas - first.cpas) / first.cpas * 100);
+
+  // Populate stat callouts
+  document.getElementById('mom-stat-js').innerHTML    = `<span class="mom-delta neg">${jsPct}%</span><br>Jobseeker traffic`;
+  document.getElementById('mom-stat-jobs').innerHTML  = `<span class="mom-delta neg">${jobPct}%</span><br>Active job volume`;
+  document.getElementById('mom-stat-jsp').innerHTML   = `<span class="mom-delta stable">~${Math.round((first.js_per_job + last.js_per_job)/2)}</span><br>Avg jobseekers per job`;
+  document.getElementById('mom-stat-inv').innerHTML   = `<span class="mom-delta bad">+${invPct}%</span><br>Investment per job`;
+  document.getElementById('mom-stat-cpc').innerHTML   = `<span class="mom-delta bad">+${cpcPct}%</span><br>Cost per click`;
+  document.getElementById('mom-stat-cpas').innerHTML  = `<span class="mom-delta bad">+${cpasPct}%</span><br>Cost per apply start`;
+
+  const accent = '#1a73e8';
+  const amber  = '#f59e0b';
+  const teal   = '#14b8a6';
+  const red    = '#ef4444';
+  const gridCol = 'rgba(0,0,0,0.06)';
+
+  // ── Chart 1: Supply & demand ─────────────────────────────────────────
+  if (momSupplyChart) momSupplyChart.destroy();
+  momSupplyChart = new Chart(document.getElementById('chart-mom-supply').getContext('2d'), {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Jobseeker traffic',
+          data: MOM.map(d => d.js_traffic),
+          backgroundColor: 'rgba(26,115,232,0.18)',
+          borderColor: 'rgba(26,115,232,0.5)',
+          borderWidth: 1,
+          borderRadius: 3,
+          yAxisID: 'yLeft',
+          order: 2,
+        },
+        {
+          type: 'bar',
+          label: 'Active jobs',
+          data: MOM.map(d => d.jobs),
+          backgroundColor: 'rgba(245,158,11,0.15)',
+          borderColor: 'rgba(245,158,11,0.45)',
+          borderWidth: 1,
+          borderRadius: 3,
+          yAxisID: 'yLeft',
+          order: 3,
+        },
+        {
+          type: 'line',
+          label: 'Jobseekers per job',
+          data: MOM.map(d => d.js_per_job),
+          borderColor: teal,
+          backgroundColor: 'rgba(20,184,166,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointBackgroundColor: teal,
+          tension: 0.35,
+          fill: false,
+          yAxisID: 'yRight',
+          order: 1,
+        },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12, padding: 16 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const v = ctx.parsed.y;
+              if (ctx.datasetIndex === 2) return ` Jobseekers/job: ${v.toFixed(1)}`;
+              return ` ${ctx.dataset.label}: ${v.toLocaleString()}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: gridCol }, ticks: { font: { size: 10 }, maxRotation: 45 } },
+        yLeft: {
+          position: 'left',
+          grid: { color: gridCol },
+          ticks: {
+            font: { size: 10 },
+            callback: v => v >= 1000 ? (v/1000).toFixed(0)+'k' : v
+          },
+          title: { display: true, text: 'Volume', font: { size: 10 }, color: '#888' }
+        },
+        yRight: {
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { font: { size: 10 }, callback: v => v.toFixed(0) },
+          title: { display: true, text: 'JS per job', font: { size: 10 }, color: teal },
+          min: 30, max: 50,
+        }
+      }
+    }
+  });
+
+  // ── Chart 2: Cost pressure ────────────────────────────────────────────
+  if (momCostChart) momCostChart.destroy();
+  momCostChart = new Chart(document.getElementById('chart-mom-cost').getContext('2d'), {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Investment per job (£)',
+          data: MOM.map(d => d.inv_per_job),
+          backgroundColor: 'rgba(26,115,232,0.15)',
+          borderColor: 'rgba(26,115,232,0.45)',
+          borderWidth: 1,
+          borderRadius: 3,
+          yAxisID: 'yLeft',
+          order: 3,
+        },
+        {
+          type: 'line',
+          label: 'Cost per click (£)',
+          data: MOM.map(d => d.cpc),
+          borderColor: amber,
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointBackgroundColor: amber,
+          tension: 0.35,
+          yAxisID: 'yRight',
+          order: 1,
+        },
+        {
+          type: 'line',
+          label: 'Cost per apply start (£)',
+          data: MOM.map(d => d.cpas),
+          borderColor: red,
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointBackgroundColor: red,
+          tension: 0.35,
+          yAxisID: 'yRight',
+          order: 2,
+        },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12, padding: 16 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const v = ctx.parsed.y;
+              if (ctx.datasetIndex === 0) return ` Investment/job: £${v.toFixed(2)}`;
+              if (ctx.datasetIndex === 1) return ` CPC: £${v.toFixed(2)}`;
+              return ` CPAS: £${v.toFixed(2)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: gridCol }, ticks: { font: { size: 10 }, maxRotation: 45 } },
+        yLeft: {
+          position: 'left',
+          grid: { color: gridCol },
+          ticks: { font: { size: 10 }, callback: v => '£'+v.toFixed(0) },
+          title: { display: true, text: 'Invest / job (£)', font: { size: 10 }, color: '#888' },
+          min: 0, max: 70,
+        },
+        yRight: {
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { font: { size: 10 }, callback: v => '£'+v.toFixed(2) },
+          title: { display: true, text: 'CPC / CPAS (£)', font: { size: 10 }, color: '#888' },
+          min: 0, max: 2.0,
+        }
+      }
+    }
+  });
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+renderInsights();
+renderKPIs();
+renderMOM();
+renderFootprint();
+renderPenetration();
+renderPills();
+renderDrilldown();
+renderCompetitors();
+renderOpportunities();
+renderKeywords('care', 'chart-kw-care');
+</script>
+</body>
+</html>
