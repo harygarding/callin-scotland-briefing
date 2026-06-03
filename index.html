@@ -439,6 +439,211 @@ tr.callin-row td { font-weight: 700; color: #1a73e8; }
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
   .topbar { flex-direction: column; align-items: flex-start; }
 }
+
+/* ── Print / PDF styles ─────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm 14mm;
+  }
+
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  body { background: #fff !important; font-size: 11px; }
+
+  /* ── Header ── */
+  .header-wrap {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin-bottom: 10px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .topbar-logo-row { padding: 8px 20px !important; }
+  .topbar-report-label h1 { font-size: 14px !important; }
+  .topbar-report-label p  { font-size: 10px !important; }
+  .indeed-wordmark { height: 20px !important; }
+  .topbar-context  { padding: 0 20px !important; min-height: 28px !important; }
+  .topbar-pill { font-size: 9px !important; padding: 0 12px !important; min-height: 28px !important; }
+
+  /* ── Page container ── */
+  .page { max-width: 100% !important; padding: 0 !important; }
+
+  /* ── Page 1: insight cards + KPI strip ── */
+  .insight-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .insight-card { padding: 10px 14px !important; }
+  .insight-icon { font-size: 16px !important; }
+  .insight-head { font-size: 12px !important; line-height: 1.3 !important; margin-bottom: 4px !important; }
+  .insight-body { font-size: 10px !important; line-height: 1.5 !important; }
+  .insight-card:hover { box-shadow: none !important; transform: none !important; }
+
+  .kpi-grid {
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 0 !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .kpi { padding: 9px 10px !important; }
+  .kpi-value { font-size: 18px !important; }
+  .kpi-label { font-size: 8px !important; margin-top: 3px !important; }
+  .kpi:hover { box-shadow: none !important; transform: none !important; }
+
+  /* ── Sections ── */
+  .section {
+    padding: 12px 18px !important;
+    margin-bottom: 0 !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+  }
+  .section-hd { font-size: 8px !important; margin-bottom: 3px !important; }
+  .section-title { font-size: 15px !important; margin-bottom: 4px !important; letter-spacing: -0.3px !important; }
+  .section-subtitle { font-size: 10px !important; margin-bottom: 10px !important; }
+  .section-intro {
+    font-size: 10px !important;
+    line-height: 1.55 !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 8px !important;
+    max-width: 100% !important;
+  }
+
+  /* Keep heading pinned to following content */
+  .section-hd, .section-title { page-break-after: avoid !important; break-after: avoid !important; }
+
+  /* ── Tables ── */
+  .tbl-wrap { overflow: visible !important; border-radius: 4px !important; }
+  .tbl-wrap.scrollable { max-height: none !important; overflow: visible !important; }
+  thead { display: table-header-group; }           /* repeat header on continuation pages */
+  thead th {
+    position: static !important;
+    font-size: 8px !important;
+    padding: 5px 8px !important;
+    white-space: nowrap !important;
+  }
+  tbody tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+  tbody td { padding: 4px 7px !important; font-size: 9px !important; line-height: 1.3 !important; }
+  .badge { font-size: 9px !important; padding: 1px 6px !important; }
+  .tag-green, .tag-amber, .tag-red { font-size: 9px !important; padding: 1px 5px !important; }
+  .tier  { font-size: 8px !important; padding: 1px 6px !important; white-space: nowrap !important; }
+  .badge { font-size: 8px !important; padding: 1px 4px !important; white-space: nowrap !important; }
+
+  /* Gap bars — hide visual bar, keep text label only */
+  .gap-bar { display: none !important; }
+  .gap-bar-wrap { min-width: 0 !important; gap: 0 !important; display: inline !important; }
+
+  /* Footprint section — compact intro so all 15 rows fit on one page */
+  #section-footprint .section-intro {
+    font-size: 9px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 5px !important;
+  }
+  #section-footprint .section-intro .tier {
+    font-size: 7px !important;
+    padding: 1px 4px !important;
+  }
+
+  /* ── MoM section ── */
+  .mom-divider { margin: 10px 0 4px !important; font-size: 8px !important; padding-bottom: 5px !important; }
+  .mom-stat-row { gap: 7px !important; margin: 8px 0 10px !important; }
+  .mom-stat-box { padding: 8px 10px !important; font-size: 10px !important; }
+  .mom-delta { font-size: 20px !important; }
+  .mom-chart-grid {
+    gap: 10px !important;
+    margin-top: 6px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .mom-chart-wrap { height: 190px !important; }
+  .mom-chart-card { padding: 10px 12px !important; }
+  .mom-chart-card h4 { font-size: 11px !important; margin-bottom: 2px !important; }
+  .mom-chart-card .mom-chart-sub { font-size: 9px !important; margin-bottom: 8px !important; }
+
+  /* ── Candidate reach ── */
+  .chart-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+  .chart-card { padding: 10px 12px !important; }
+  .chart-card h4 { font-size: 11px !important; margin-bottom: 3px !important; }
+  .chart-card p  { font-size: 9px !important; margin-bottom: 6px !important; }
+  .chart-wrap { height: 280px !important; }
+  #pen-chart-wrap, .chart-wrap { height: 280px !important; }
+
+  /* ── Area pills — hidden in print ── */
+  #area-pills, .pills { display: none !important; }
+
+  /* ── Competitor grid ── */
+  .comp-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
+  .comp-card { padding: 12px 14px !important; }
+  .comp-card:hover { box-shadow: none !important; transform: none !important; }
+  .comp-card-name { font-size: 11px !important; margin-bottom: 8px !important; }
+  .comp-card-count { font-size: 28px !important; }
+  .comp-card-label { font-size: 8px !important; }
+  .comp-card-areas { font-size: 9px !important; margin-top: 8px !important; padding-top: 8px !important; line-height: 1.6 !important; }
+
+  /* ── Keyword section ── */
+  .kw-toggle { display: none !important; }
+  .kw-panel[style*="display: none"] { display: none !important; }
+  .kw-blank-card { padding: 8px 12px !important; margin-bottom: 10px !important; gap: 10px !important; }
+  .kw-blank-icon { font-size: 18px !important; }
+  .kw-blank-title { font-size: 11px !important; margin-bottom: 2px !important; }
+  .kw-blank-desc { font-size: 9px !important; margin-bottom: 5px !important; }
+  .kw-blank-stats { font-size: 9px !important; gap: 10px !important; }
+  .kw-signal-grid {
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .kw-col { padding: 10px !important; }
+  .kw-col-hd { font-size: 10px !important; margin-bottom: 6px !important; }
+  .kw-tile { padding: 4px 8px !important; margin-bottom: 3px !important; }
+  .kw-tile-label { font-size: 10px !important; }
+  .kw-tile-pcts { font-size: 9px !important; }
+  .kw-tile-idx { font-size: 9px !important; padding: 1px 5px !important; }
+  .kw-chart-row {
+    gap: 10px !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .kw-chart-row .chart-wrap { height: 170px !important; }
+
+  /* ── Recommendations ── */
+  .rec-grid {
+    gap: 10px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .rec-card { padding: 12px 14px !important; }
+  .rec-card-icon { font-size: 18px !important; margin-top: 0 !important; }
+  .rec-card-title { font-size: 12px !important; margin-bottom: 6px !important; }
+  .rec-card-body { font-size: 10px !important; line-height: 1.55 !important; }
+
+  /* Recommendation legend */
+  .rec-legend { font-size: 9px !important; padding: 8px 10px !important; }
+
+  /* ── Stat cards (area drilldown) ── */
+  .stat-card { padding: 8px 10px !important; }
+  .stat-value { font-size: 16px !important; }
+  .stat-label { font-size: 8px !important; margin-top: 3px !important; }
+
+  /* ── Global canvas cap ── */
+  canvas { max-height: 280px !important; }
+
+  /* ── Avoid interactive artifacts ── */
+  .kpi:hover, tbody tr:hover { background: inherit !important; }
+  *:hover { transform: none !important; box-shadow: none !important; }
+}
 </style>
 </head>
 <body>
@@ -550,7 +755,7 @@ tr.callin-row td { font-weight: 700; color: #1a73e8; }
   </div>
 
   <!-- 1 · Where you stand -->
-  <div class="section">
+  <div class="section" id="section-footprint">
     <div class="section-hd">Section 1</div>
     <div class="section-title">Where you stand — market position across all active locations</div>
     <p class="section-intro">
@@ -1523,6 +1728,161 @@ renderDrilldown();
 renderCompetitors();
 renderOpportunities();
 renderKeywords('care', 'chart-kw-care');
+
+// ── Print mode (?print=1) ────────────────────────────────────────────────────
+// Expands all interactive sections into static, paginated content for PDF export.
+const IS_PRINT = location.search.includes('print');
+
+function printSetup() {
+  // 1. Force page-break-before on every top-level section
+  document.querySelectorAll('.page > .section').forEach(el => {
+    el.style.pageBreakBefore = 'always';
+    el.style.breakBefore = 'page';
+  });
+
+  // 2. Replace the interactive area deep-dive with one static page per location
+  const interactiveArea = document.getElementById('area-pills').closest('.section');
+
+  const areaPages = pen_codes.map(code => {
+    const d = DATA[code];
+    const p = PEN[code] || null;
+    const r = RANKS[code] || {};
+
+    // Top-5 table rows
+    let tableRows = d.top5.map((c, i) => {
+      const clickPct = d.marketClicks ? (c.clicks / d.marketClicks * 100).toFixed(1) + '%' : '—';
+      const asPct    = d.marketApplyStarts ? (c.applyStarts / d.marketApplyStarts * 100).toFixed(1) + '%' : '—';
+      return `<tr class="${c.isCallin ? 'callin-row' : ''}">
+        <td class="c">${rankBadge(i + 1)}</td>
+        <td>${sn(c.name)}${c.isCallin ? ' <span style="font-size:10px;background:#1a73e8;color:#fff;padding:1px 5px;border-radius:3px;vertical-align:middle">You</span>' : ''}</td>
+        <td class="r">${clickPct}</td>
+        <td class="r">${asPct}</td>
+        <td class="r">${rateTag(c.applyRate)}</td>
+      </tr>`;
+    }).join('');
+
+    // If Call-In Homecare is not in top 5, add their row at the end
+    const callinInTop5 = d.top5.some(c => c.isCallin);
+    if (!callinInTop5 && r.clickRank) {
+      const clickPct = d.marketClicks ? (d.callinClicks / d.marketClicks * 100).toFixed(1) + '%' : '—';
+      const asPct    = d.marketApplyStarts ? (d.callinApplyStarts / d.marketApplyStarts * 100).toFixed(1) + '%' : '—';
+      tableRows += `<tr class="callin-row">
+        <td class="c">${rankBadge(r.clickRank)}</td>
+        <td>Call-In Homecare <span style="font-size:10px;background:#1a73e8;color:#fff;padding:1px 5px;border-radius:3px;vertical-align:middle">You</span></td>
+        <td class="r">${clickPct}</td>
+        <td class="r">${asPct}</td>
+        <td class="r">${rateTag(d.callinApplyRate)}</td>
+      </tr>`;
+    }
+
+    const statsHtml = p ? `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
+        <div class="stat-card" style="padding:12px 14px">
+          <div class="stat-value" style="font-size:18px">${shr(d.callinClicks, d.marketClicks)}</div>
+          <div class="stat-label">Click share</div>
+        </div>
+        <div class="stat-card" style="padding:12px 14px">
+          <div class="stat-value" style="font-size:18px">${shr(d.callinApplyStarts, d.marketApplyStarts)}</div>
+          <div class="stat-label">AS share</div>
+        </div>
+        <div class="stat-card" style="padding:12px 14px">
+          <div class="stat-value" style="font-size:18px">${penTag(p.penetration)}</div>
+          <div class="stat-label">Candidate penetration</div>
+        </div>
+      </div>` : '';
+
+    return `
+      <div class="section" style="page-break-before:always;break-before:page">
+        <div class="section-hd">Section 3 &mdash; Area Deep-Dive</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+          <div style="font-size:20px;font-weight:800;color:var(--navy)">${d.county}</div>
+          <div>${tierBadge(code)}</div>
+        </div>
+        <div style="font-size:12px;color:var(--text-2);margin-bottom:16px">
+          ${d.totalClients} advertisers active &nbsp;·&nbsp;
+          Click rank ${rankBadge(r.clickRank || null)} &nbsp;·&nbsp;
+          AS rank ${rankBadge(r.asRank || null)} &nbsp;·&nbsp;
+          ${shr(d.callinClicks, d.marketClicks)} click share &nbsp;·&nbsp;
+          ${shr(d.callinApplyStarts, d.marketApplyStarts)} AS share
+        </div>
+        ${statsHtml}
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th class="c">Rank</th>
+              <th>Advertiser</th>
+              <th class="r">Click share</th>
+              <th class="r">AS share</th>
+              <th class="r">Apply rate</th>
+            </tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Inject all area pages after the interactive section, then hide it
+  const areaDiv = document.createElement('div');
+  areaDiv.id = 'print-areas';
+  areaDiv.innerHTML = areaPages;
+  interactiveArea.insertAdjacentElement('afterend', areaDiv);
+  interactiveArea.style.display = 'none';
+
+  // ── Section-specific compactions ──────────────────────────────────────────
+
+  // Remove max-height from all scrollable table wrappers
+  document.querySelectorAll('.tbl-wrap.scrollable').forEach(el => {
+    el.style.maxHeight = 'none';
+    el.style.overflowY = 'visible';
+  });
+
+  // "Where you stand" — force-compact via inline styles so all 15 rows fit on one
+  // landscape A4 page. gapBar() embeds inline font-size:11px which overrides CSS rules.
+  const footprintSection = document.getElementById('section-footprint');
+  if (footprintSection) {
+    footprintSection.style.padding = '10px 16px';
+
+    const intro = footprintSection.querySelector('.section-intro');
+    if (intro) {
+      intro.style.cssText = 'font-size:8.5px;color:var(--text-2);margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid #e4e8ef;line-height:1.6';
+      intro.innerHTML =
+        '<span class="tier tier-dominant" style="font-size:7.5px;padding:1px 5px">Dominant</span>&nbsp;#1+&gt;40%&nbsp;&middot;&nbsp;' +
+        '<span class="tier tier-leading" style="font-size:7.5px;padding:1px 5px">Leading</span>&nbsp;#1–2&nbsp;&middot;&nbsp;' +
+        '<span class="tier tier-competitive" style="font-size:7.5px;padding:1px 5px">Competitive</span>&nbsp;top 5&nbsp;&middot;&nbsp;' +
+        '<span class="tier tier-building" style="font-size:7.5px;padding:1px 5px">Building</span>&nbsp;early presence';
+    }
+
+    footprintSection.querySelectorAll('thead th').forEach(th => {
+      th.style.cssText = 'padding:4px 5px!important;font-size:7.5px!important;line-height:1.2;white-space:nowrap;position:static';
+    });
+    footprintSection.querySelectorAll('tbody td').forEach(td => {
+      td.style.cssText = 'padding:3px 5px!important;font-size:8.5px!important;line-height:1.25;vertical-align:middle';
+      td.querySelectorAll('[style]').forEach(el => { el.style.fontSize = '8.5px'; });
+    });
+  }
+
+  // 3. Show both keyword panels, page-break between them
+  const careListPanel = document.getElementById('kw-panel-care-list');
+  careListPanel.style.display = '';
+  careListPanel.style.pageBreakBefore = 'always';
+  careListPanel.style.breakBefore = 'page';
+  careListPanel.style.paddingTop = '20px';
+  // Add a clear heading above the full list page
+  careListPanel.insertAdjacentHTML('afterbegin', `
+    <div style="margin-bottom:12px">
+      <div class="section-hd">Section 6 — Keyword Detail</div>
+      <div style="font-size:15px;font-weight:800;color:var(--navy);letter-spacing:-0.3px;margin-bottom:4px">
+        Full keyword list — Call-In Homecare Care jobs
+      </div>
+      <p style="font-size:10px;color:var(--text-2);margin-bottom:12px;line-height:1.55;border-bottom:1px solid var(--border);padding-bottom:8px">
+        All keywords that drove traffic to Call-In Homecare listings, ranked by share of total clicks.
+        Index compares your keyword weight against the market — 100 = perfectly aligned.
+      </p>
+    </div>`);
+  document.getElementById('kw-toggle').style.display = 'none';
+}
+
+if (IS_PRINT) printSetup();
 </script>
 </body>
 </html>
